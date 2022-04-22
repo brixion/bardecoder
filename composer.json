@@ -1,0 +1,42 @@
+{
+    "name": "brixion/bardecoder",
+    "description": "GS1 HIBC barcode decoder",
+    "keywords": [
+        "GS1",
+        "HIBC",
+        "UDI",
+        "barcode",
+        "decoder"
+    ],
+    "homepage": "https://github.com/Brixion/Bardecoder",
+    "type": "library",
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Brixion\\Bardecoder\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Brixion\\Bardecoder\\": "tests"
+        }
+    },
+    "authors": [
+        {
+            "name": "Maarten Olijve",
+            "email": "maarten@brixion.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
