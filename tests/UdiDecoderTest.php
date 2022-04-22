@@ -10,7 +10,7 @@ final class UdiDecoder extends TestCase
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('01950123456789034226163103000123');
-        $this->assertInstanceOf(Barcode::class, $barcode);
+        $this->assertInstanceOf(UdiDecoder::class, $barcode);
     }
 
     public function testGS1Gtin(): void 
@@ -40,7 +40,7 @@ final class UdiDecoder extends TestCase
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertInstanceOf(Barcode::class, $barcode);
+        $this->assertInstanceOf(UdiDecoder::class, $barcode);
     }
     public function testHBICLic(): void
     {
