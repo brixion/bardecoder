@@ -1,81 +1,137 @@
-<?phpdeclare(strict_types = 1)
-use phpDocumentor\Reflection\Types\Void_;
-;
+<?php declare(strict_types=1);
+
+namespace Brixion\Bardecoder\Test;
+
 use PHPUnit\Framework\TestCase;
+use Brixion\Bardecoder\UdiDecoder;
 
-final class UdiDecoder extends TestCase
+final class UdiDecoderTest extends TestCase
 {
+    private string $udi = '01950123456789034226163103000123';
+    private string $udi_gtin = '950123456789034226163';
+    private string $udi_country = '616';
+    private string $udi_net_weight = '000123';
+
+    private string $hibc = '+J123AQ3451/$$3231231BC34567$4012R';
+    private string $hbic_lic = 'J123';
+    private string $hbic_product_code = 'AQ3451';
+    private string $hbic_packaging_index = '1';
+    private string $hbic_expiring_date = '2023-12-31';
+    private string $hbic_lot = 'BC34567';
+    private string $hbic_serial = '012R';
+
     // Test GS1 barcode
-    public function testGS1Decoder(): void
+    /** @test */
+    public function it_can_instantiate_gs1(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('01950123456789034226163103000123');
-        $this->assertInstanceOf(UdiDecoder::class, $barcode);
+        $this->assertInstanceOf(
+            UdiDecoder::class ,
+            $barcode
+        );
+    }
+    /** test */
+    public function it_returns_gtin_from_gs1(): void
+    {
+        $decoder = new UdiDecoder();
+        $barcode = $decoder->decode('01950123456789034226163103000123');
+        $this->assertEquals(
+            $udi_gtin,
+            $barcode->getGtin()
+        );
+    }
+    /** test */
+    public function it_returns_country_from_gs1(): void
+    {
+        $decoder = new UdiDecoder();
+        $barcode = $decoder->decode('01950123456789034226163103000123');
+        $this->assertEquals(
+            $udi_country,
+            $barcode->getOriginCountry()
+        );
+    }
+    /** test */
+    public function it_returns_netweight_from_gs1(): void
+    {
+        $decoder = new UdiDecoder();
+        $barcode = $decoder->decode('01950123456789034226163103000123');
+        $this->assertEquals(
+            $udi_net_weight,
+            $barcode->getNetWeight()
+        );
     }
 
-    public function testGS1Gtin(): void 
-    {
-        $decoder = new UdiDecoder();
-        $barcode = $decoder->decode('01950123456789034226163103000123');
-        $this->assertEquals('950123456789034226163', $barcode->getGtin());
-    }
-
-    public function testGS1OriginCountry(): void
-    {
-        $decoder = new UdiDecoder();
-        $barcode = $decoder->decode('01950123456789034226163103000123');
-        $this->assertEquals('616', $barcode->getOriginCountry());
-    }
-
-    public function testGS1NetWeight(): void
-    {
-        $decoder = new UdiDecoder();
-        $barcode = $decoder->decode('01950123456789034226163103000123');
-        $this->assertEquals('000123', $barcode->getNetWeight());
-    }
-    
 
     // Test HIBC barcode
-    public function testHBICDecoder(): void
+    /** @test */
+    public function it_can_instantiate_hbic(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertInstanceOf(UdiDecoder::class, $barcode);
+        $this->assertInstanceOf(
+            UdiDecoder::class ,
+            $barcode
+        );
     }
-    public function testHBICLic(): void
+    /** test */
+    public function it_returns_lic_from_hbic(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertEquals('J123', $barcode->getLic());
+        $this->assertEquals(
+            $hbic_lic,
+            $barcode->getLic()
+        );
     }
-    public function testHBICProductCode(): void
+    /** test */
+    public function it_returns_productcode_from_hbic(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertEquals('AQ345', $barcode->getProductCode());
+        $this->assertEquals(
+            $hbic_product_code,
+            $barcode->getProductCode()
+        );
     }
-    public function testHBICPackagingIndex(): void
+    /** test */
+    public function it_returns_packagingindex_from_hbic(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertEquals('1', $barcode->getPackagingIndex());
+        $this->assertEquals(
+            $hbic_packaging_index,
+            $barcode->getPackagingIndex()
+        );
     }
-    public function testHBICExpiringDate(): void
+    /** test */
+    public function it_returns_expiringdate_from_hbic(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertEquals('2023-12-31', $barcode->getExpiringDate());
+        $this->assertEquals(
+            $hbic_expiring_date,
+            $barcode->getExpiringDate()
+        );
     }
-    public function testHBICLot(): void
+    /** test */
+    public function it_returns_lot_from_hbic(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertEquals('BC34567', $barcode->getLot());
+        $this->assertEquals(
+            $hbic_lot,
+            $barcode->getLot()
+        );
     }
-    public function testHBICSerial(): void
+    /** test */
+    public function it_returns_serial_from_hbic(): void
     {
         $decoder = new UdiDecoder();
         $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
-        $this->assertEquals('012R', $barcode->getSerial());
+        $this->assertEquals(
+            $hbic_serial,
+            $barcode->getSerial()
+        );
     }
 }

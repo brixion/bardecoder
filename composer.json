@@ -24,7 +24,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Brixion\\Bardecoder\\": "tests"
+            "Brixion\\Bardecoder\\Test\\": "tests"
         }
     },
     "authors": [

@@ -8,4 +8,12 @@ class UdiDecoder
     {
 
     }
+
+    public function decode(string $barcode): UdiDecoder
+    {
+        $decoder = new UdiDecoder();
+        
+        return $decoder;
+    }
+
 }
