@@ -85,21 +85,29 @@ class UdiDecoder
 
     public function checkBarcodeValidity(string $barcode): bool
     {
-        $modulo_check_character = json_decode(file_get_contents(__DIR__ . '/modulo_check_characters.json'), true);
+        // define $modulo_check_characters
+        require __DIR__ . '/ModuloCheckArray.php'; 
+        
+        $barcode_check_character = $this->getCheckCharacter($barcode);
+        // compare each character in barcode with $modulo_check_characters values and get the sum
 
-        // compare each character in barcode with the modulo_check_character.json and get the sum
         $sum = 0;
-        for ($i = 0; $i < strlen($barcode); $i++) {
-            $sum += $modulo_check_character[$barcode[$i]];
+        foreach(str_split($barcode) as $char)
+        {
+            $sum += $modulo_check_characters[$char];
         }
 
         $modulo = $sum % 43;
+        // get the key according to the sum value from $modulo_check_characters
+        $check_character = array_search($modulo, $modulo_check_characters);
 
-        if ($modulo === intval($this->check_character)) {
+        if ($barcode_check_character == $check_character) {
             $this->is_valid = true;
+            echo 'Barcode is valid' . PHP_EOL;
             return true;
         } else {
             $this->is_valid = false;
+            echo 'Barcode is not valid' . PHP_EOL;
             return false;
         }
     }
