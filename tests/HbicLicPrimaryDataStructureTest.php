@@ -131,7 +131,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
         );
     }
 
-    /** test
+    /** @test
      * UdiDecoder can check if hibc is valid
      */
     public function it_can_check_if_hibc_is_valid(): void
@@ -142,4 +142,5 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
             $decoder->is_valid
         );
     }
+
 }
