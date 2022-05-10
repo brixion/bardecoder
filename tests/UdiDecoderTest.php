@@ -21,7 +21,7 @@ final class UdiDecoderTest extends TestCase
     private string $hbic_serial = '012R';
 
     // Test GS1 barcode
-    /** @test */
+    /** test */
     public function it_can_instantiate_gs1(): void
     {
         $decoder = new UdiDecoder();
@@ -68,10 +68,9 @@ final class UdiDecoderTest extends TestCase
     public function it_can_instantiate_hbic(): void
     {
         $decoder = new UdiDecoder();
-        $barcode = $decoder->decode('+J123AQ3451/$$3231231BC34567$4012R');
         $this->assertInstanceOf(
             UdiDecoder::class ,
-            $barcode
+            $decoder
         );
     }
     /** test */
