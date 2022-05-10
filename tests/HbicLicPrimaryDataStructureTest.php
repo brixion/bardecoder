@@ -142,5 +142,16 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
             $decoder->is_valid
         );
     }
+    /** @test
+     * UdiDecoder can check if hibc is invalid
+     */
+    public function it_can_check_if_hibc_is_invalid(): void
+    {
+        $decoder = new UdiDecoder();
+        $decoder->decode('+EKUR003152EU10');
+        $this->assertFalse(
+            $decoder->is_valid
+        );
+    }
 
 }
