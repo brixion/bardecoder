@@ -8,59 +8,87 @@ class UdiDecoder
 {
     // Debug field $count
     private static $count = 1;
+    public string $barcode;
     public string $lic;
     public string $product_code;
     public string $packaging_index;
     public string $check_character;
     public bool $is_valid;
 
-    public function decode(string $barcode): void
+    /**
+     * UdiDecoder constructor.
+     * Removes leading and trailing asterisks from barcode
+     * Removes + character and all characters before it
+     * Checks if barcode is longer than 4 character after cleanup
+     * @param string $barcode
+     * @throws \Exception
+     */
+    public function __construct(string $barcode)
     {
-        // Debug string
-        echo self::$count++ . ' ' . $barcode . PHP_EOL;
-
         $barcode = trim($barcode, '*');
-        // Check for + character
-        if (substr($barcode, 0, 1) !== '+')
-            throw new Exception('Barcode must start with +');
-        
-        // remove + from barcode
-        $barcode = substr($barcode, 1);
+        $pos = strpos($barcode, '+');
+        if ($pos === false) 
+            throw new Exception('Barcode is invalid, no + character found');
 
-        $this->getLic($barcode);
-        $this->getProductCode($barcode);
-        $this->getPackagingIndex($barcode);
-        $this->getCheckCharacter($barcode);
-        $this->checkBarcodeValidity($barcode);
+        // We need 4 characters for LIC, at least 1 for productcode and 1 for check 
+        if (strlen($barcode) < 7)
+            throw new Exception('Barcode is invalid, too short');
+        
+        $last_char = substr($barcode, -1);
+        // Check if last character is valid for checking
+        if (!preg_match('/[a-zA-Z0-9-. $\/+%]{1}/', $last_char))
+            throw new Exception('Barcode is invalid, check character is not a valid character');
+        $this->check_character = $last_char;
+
+        // get string between + and last character
+        $this->barcode = substr($barcode, $pos + 1, -1);
     }
-    public function getLic(string $barcode): string
+
+    // public function decode(): void
+    // {
+    //     // Debug string
+    //     echo self::$count++ . ' ' . $this->barcode . PHP_EOL;
+
+    //     $barcode = trim($barcode, '*');
+    //     // Check for + character
+    //     if (substr($barcode, 0, 1) !== '+')
+    //         throw new Exception('Barcode must start with +');
+        
+    //     // remove + from barcode
+    //     $barcode = substr($barcode, 1);
+
+    //     $this->getLic($barcode);
+    //     $this->getProductCode($barcode);
+    //     $this->getPackagingIndex($barcode);
+    //     $this->getCheckCharacter($barcode);
+    //     $this->checkBarcodeValidity($barcode);
+    // }
+    public function getLic(): void
     {
         // check if first character is alpabetical
-        if (!ctype_alpha(substr($barcode, 0, 1)))
+        if (!ctype_alpha($this->barcode[0]))
             throw new Exception("First character of Labeler Identification Code (LIC) must be alphabetic");
             
-        $this->lic = substr($barcode, 0, 4);
-        return $this->lic;
+        $this->lic = substr($this->barcode, 0, 4);
     }
 
-    public function getProductCode(string $barcode): string
+    public function getProductCode(): void
     {
-        // remove lic from barcode
-        $barcode = substr($barcode, 4);
+        // remove lic and + from barcode
+        $barcode = substr($this->barcode, 5);
         // remove unit and check character from barcode
         $barcode = substr($barcode, 0, -2);
 
         if (!ctype_alnum($barcode))
             throw new Exception("Product Code must only contain digits and alphabetic characters");
 
-        $this->product_code = $barcode;
-        return $this->product_code;     
+        $this->product_code = $barcode;  
     }
 
-    public function getPackagingIndex(string $barcode): string
+    public function getPackagingIndex(): void
     {
         // get the second to last character
-        $barcode = substr($barcode, -2)[0];
+        $barcode = substr($this->barcode, -2)[0];
 
         // check if it is a digit
         if (!ctype_digit($barcode))
@@ -70,7 +98,7 @@ class UdiDecoder
         return $barcode;
     }
     
-    public function getCheckCharacter(string $barcode): string
+    public function getCheckCharacter(): void
     {
         // get the last character
         $barcode = substr($barcode, -1);
@@ -78,12 +106,12 @@ class UdiDecoder
         // check if it is alnum
         if (!ctype_alnum($barcode))
             throw new Exception("Check character must be alphanumeric");
-        
+        echo "Check character: " . $barcode . PHP_EOL;
         $this->check_character = $barcode;
         return $barcode;
     }
 
-    public function checkBarcodeValidity(string $barcode): bool
+    public function checkBarcodeValidity(): bool
     {
         // shitty fix for a bug I made myself. Will fix with refactoring
         $barcode = "+".$barcode;
