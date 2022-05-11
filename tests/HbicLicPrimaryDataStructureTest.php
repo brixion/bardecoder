@@ -28,8 +28,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_lic_from_hibc(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+D65825032111');
+        $decoder = new UdiDecoder('+D65825032111');
         $this->assertEquals(
             'D658',
             $decoder->lic
@@ -41,8 +40,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_lic_from_alphabetical_hibc(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+EKUR003152EU1G');
+        $decoder = new UdiDecoder('+EKUR003152EU1G');
         $this->assertEquals(
             'EKUR',
             $decoder->lic
@@ -54,8 +52,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
     */
     public function it_can_extract_lic_with_leading_and_trailing_asterisks_barcode(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('*+D65825032111*');
+        $decoder = new UdiDecoder('*+D65825032111*');
         $this->assertEquals(
             'D658',
             $decoder->lic
@@ -68,8 +65,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
     */
     public function it_can_extract_lic_with_leading_and_trailing_asterisks_in_alphabetical_barcode(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('*+EKUR003152EU1G*');
+        $decoder = new UdiDecoder('*+EKUR003152EU1G*');
         $this->assertEquals(
             'EKUR',
             $decoder->lic
@@ -82,8 +78,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_product_code_from_hibc(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+D65825032111');
+        $decoder = new UdiDecoder('+D65825032111');
         $this->assertEquals(
             '250321',
             $decoder->product_code
@@ -95,8 +90,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_product_code_from_alphabetical_hibc(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+EKUR003152EU1G');
+        $decoder = new UdiDecoder('+EKUR003152EU1G');
         $this->assertEquals(
             '003152EU',
             $decoder->product_code
@@ -109,8 +103,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_check_character_from_hibc(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+D65825032111');
+        $decoder = new UdiDecoder('+D65825032111');
         $this->assertEquals(
             '1',
             $decoder->check_character
@@ -123,8 +116,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_check_character_from_alphabetical_hibc(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+EKUR003152EU1G');
+        $decoder = new UdiDecoder('+EKUR003152EU1G');
         $this->assertEquals(
             'G',
             $decoder->check_character
@@ -136,8 +128,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_check_if_hibc_is_valid(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+D65825032111');
+        $decoder = new UdiDecoder('+D65825032111');
         $this->assertTrue(
             $decoder->is_valid
         );
@@ -147,11 +138,9 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_check_if_hibc_is_invalid(): void
     {
-        $decoder = new UdiDecoder();
-        $decoder->decode('+EKUR003152EU10');
+        $decoder = new UdiDecoder('+EKUR003152EU10');
         $this->assertFalse(
             $decoder->is_valid
         );
     }
-
 }
