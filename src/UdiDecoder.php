@@ -71,12 +71,11 @@ class UdiDecoder
     }
 
     public function getProductCode(): void
-    {
-        // remove lic and + from barcode
-        $barcode = substr($this->barcode, 5);
-        // remove unit and check character from barcode
-        $barcode = substr($barcode, 0, -2);
-
+    {   
+        // remove LIC and Packaging Index
+        $barcode = substr($this->barcode, 4);
+        $barcode = substr($barcode, 0, -1);
+        
         if (!ctype_alnum($barcode))
             throw new Exception("Product Code must only contain digits and alphabetic characters");
 
@@ -92,18 +91,6 @@ class UdiDecoder
 
         $this->packaging_index = $barcode;
     }
-    
-//     public function getCheckCharacter(): void
-//     {
-//         $barcode = substr($this->barcode, -1);
-        
-//         if (!ctype_alnum($barcode))
-//             throw new Exception("Check character must be alphanumeric");
-
-//         echo "Check character: " . $barcode . PHP_EOL;
-// die();
-//         $this->check_character = $barcode;
-//     }
 
     public function checkBarcodeValidity(): bool
     {
@@ -113,7 +100,7 @@ class UdiDecoder
         require __DIR__ . '/ModuloCheckArray.php'; 
         
         $barcode_check_character = $this->check_character;
-        echo "Check character: " . $barcode_check_character . PHP_EOL;
+
         // compare each character in barcode with $modulo_check_characters values and get the sum
         $sum = 0;
         //var_dump(str_split($barcode));
@@ -129,11 +116,9 @@ class UdiDecoder
 
         if ($barcode_check_character == $check_character) {
             $this->is_valid = true;
-            echo 'Barcode is valid' . PHP_EOL;
             return true;
         } else {
             $this->is_valid = false;
-            echo 'Barcode is not valid' . PHP_EOL;
             return false;
         }
     }
