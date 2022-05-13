@@ -9,6 +9,7 @@ use phpDocumentor\Reflection\Types\Void_;
 final class HbicLicPrimaryDataStructureTest extends TestCase
 {
     // HBIC barcode without alphabetical characters
+    // this barcode with its check character is known-good
     private string $hibc = '+D65825032111';
     private string $lic = 'D658';
     private string $product_code = '250321';
@@ -16,6 +17,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
     private string $check_character = '1';
 
     //HBIC barcode with alphabetical characters
+    // this barcode with its check character is known-good
     private string $alph_hbic = '+EKUR003152EU1G';
     private string $alph_lic = 'EKUR';
     private string $alph_product_code = '003152EU';
@@ -132,6 +134,12 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
         $this->assertTrue(
             $decoder->is_valid
         );
+        
+        $decoder = new UdiDecoder('+EKUR003152EU1G');
+        $this->assertTrue(
+            $decoder->is_valid
+        );
+        
     }
     /** @test
      * UdiDecoder can check if hibc is invalid
