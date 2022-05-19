@@ -7,7 +7,7 @@ use Exception;
 class UdiDecoder
 {
     // Debug field $count
-    private static $count = 1;
+    private static int $count = 1;
     public string $barcode;
     public string $barcode_raw;
     public string $barcode_stripped;
@@ -17,6 +17,14 @@ class UdiDecoder
     public string $check_character;
     public bool $is_valid;
 
+    
+
+    public bool $contains_secondary_data;
+    public string $secondary_data;
+
+
+
+
     /**
      * UdiDecoder constructor.
      * Removes leading and trailing asterisks from barcode
@@ -25,7 +33,7 @@ class UdiDecoder
      * @param string $barcode
      * @throws \Exception
      */
-    public function __construct(string $barcode)
+    function __construct(string $barcode)
     {
         $this->barcode_raw = $barcode;
 
@@ -40,13 +48,36 @@ class UdiDecoder
         
         $this->barcode_stripped =  $barcode;
         
+        // The check character is always last. Even on barcodes with secondary data
         $last_char = substr($barcode, -1);
         if (!preg_match('/[a-zA-Z0-9-. $\/+%]{1}/', $last_char))
             throw new Exception('Barcode is invalid, check character is not a valid character');
         $this->check_character = $last_char;
 
-        // get string between + and last character
+        // Get string between + and last character
         $this->barcode = substr($barcode, $pos + 1, -1);
+
+        // Check if barcode has secondary data in it
+        $pos = strpos($barcode, '/');
+        if ($pos !== false) {
+            $this->contains_secondary_data = true;
+            
+            // Primary data in barcode, secondary data in secondary data
+            $this->secondary_data = substr($this->barcode, $pos);
+            $this->barcode = substr($this->barcode, 0, $pos);
+            $this->barcode = rtrim($this->barcode, '/');
+
+
+            $secondary_decoder = new HIBCSecondaryDataDecoder($this);
+
+        }
+
+        
+
+        
+
+
+        
 
         $this->decode();
     }
@@ -60,6 +91,7 @@ class UdiDecoder
         $this->getProductCode();
         $this->getPackagingIndex();
         $this->checkBarcodeValidity();
+        $this->test();
     }
 
     public function getLic(): void
@@ -103,7 +135,6 @@ class UdiDecoder
 
         // compare each character in barcode with $modulo_check_characters values and get the sum
         $sum = 0;
-        //var_dump(str_split($barcode));
         foreach(str_split($barcode) as $char)
         {
             $sum += $modulo_check_characters[$char];
@@ -121,5 +152,10 @@ class UdiDecoder
             $this->is_valid = false;
             return false;
         }
+    }
+
+    public function test(){
+        print_r($this);
+        die();
     }
 }
