@@ -3,6 +3,7 @@
 namespace Brixion\Bardecoder;
 
 use Exception;
+use Brixion\Bardecoder\HIBCSecondaryDataDecoder;
 
 class UdiDecoder
 {
@@ -15,15 +16,23 @@ class UdiDecoder
     public string $product_code;
     public string $packaging_index;
     public string $check_character;
-    public bool $is_valid;
-
-    
+    public bool $is_valid;    
 
     public bool $contains_secondary_data;
     public string $secondary_data;
 
+    public string $secondary_data_flag;
+    public string $lot;
+    public string $expiry_date;
 
+    public string $date_of_manufacture_data_identifier;
+    public string $date_of_manufacture;
 
+    public string $secondary_supplemental_data_identifier;
+    public string $serial_number;
+    
+    public string $quantity_identifier;
+    public string $quantity;
 
     /**
      * UdiDecoder constructor.
@@ -70,10 +79,21 @@ class UdiDecoder
 
             $secondary_decoder = new HIBCSecondaryDataDecoder($this);
 
+            
+
         }
 
         
+        // The following is probably illegal but I found multiple barcodes
+        // beginning with a $, followed by a lot, ending with package index and mod check.
+        // Check if barcode begins with $ for lot only
+        // if (substr($this->barcode, 0, 1) == '$'){
+        //     $this->getPackagingIndex();
+        //     $this->getLot();
+        //     $this->test();
+        // }
 
+            
         
 
 
@@ -85,13 +105,12 @@ class UdiDecoder
     public function decode(): void
     {
         // Debug string
-        echo self::$count++ . ' ' . $this->barcode . PHP_EOL;
+        echo self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
 
         $this->getLic();
         $this->getProductCode();
         $this->getPackagingIndex();
         $this->checkBarcodeValidity();
-        $this->test();
     }
 
     public function getLic(): void
@@ -145,6 +164,8 @@ class UdiDecoder
         // get the key according to the sum value from $modulo_check_characters
         $check_character = array_search($remainder, $modulo_check_characters);
 
+        // echo 'Check character: ' . $barcode_check_character . PHP_EOL;
+        // echo 'Calculated check character: ' . $check_character . PHP_EOL.PHP_EOL;
         if ($barcode_check_character == $check_character) {
             $this->is_valid = true;
             return true;
@@ -152,6 +173,11 @@ class UdiDecoder
             $this->is_valid = false;
             return false;
         }
+    }
+
+    public function getLot()
+    {
+        $lot = substr($this->barcode, 1, -1);
     }
 
     public function test(){
