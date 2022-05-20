@@ -30,7 +30,7 @@ class UdiDecoder
 
     public string $secondary_supplemental_data_identifier;
     public string $serial_number;
-    
+
     public string $quantity_identifier;
     public string $quantity;
 
@@ -83,21 +83,12 @@ class UdiDecoder
 
         }
 
-        
-        // The following is probably illegal but I found multiple barcodes
-        // beginning with a $, followed by a lot, ending with package index and mod check.
-        // Check if barcode begins with $ for lot only
+        // Check if barcode begins with $ for lot only codes
         // if (substr($this->barcode, 0, 1) == '$'){
         //     $this->getPackagingIndex();
         //     $this->getLot();
         //     $this->test();
         // }
-
-            
-        
-
-
-        
 
         $this->decode();
     }
