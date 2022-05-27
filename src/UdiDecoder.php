@@ -147,7 +147,7 @@ class UdiDecoder
         $sum = 0;
         foreach(str_split($barcode) as $char)
         {
-            $sum += $modulo_check_characters[$char];
+            $sum += $modulo_check_characters[strtoupper($char)];
         }
         
         $remainder = $sum % 43;
