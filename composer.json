@@ -37,6 +37,9 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "testall": "phpunit tests",
+        "testprimary": "phpunit tests/HbicLicPrimaryDataStructureTest.php",
+        "testsecondary": "phpunit tests/HbicLicSecondaryDataStructureTest.php"
     }
 }
