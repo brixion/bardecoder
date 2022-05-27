@@ -13,6 +13,20 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
 
     // HIBC barcodes from the documentation themselves
     private array $hibcs = [
+            // [
+            //     // testing barcode
+            //     'barcode' => '+J014652230580/$$01222iamalotnr/16D20200311Z',
+            //     'lic' => 'J014',
+            //     'product_code' => '65223058',
+            //     'packaging_index' => '0',
+            //     'check_character' => 'Z',
+            //     'secondary_data' => '$$01222iamalotnr/16D20200311Z',
+
+            //     'secondary_data_flag' => '$$0',
+            //     'expory_date' => '2022-12-01',
+            //     'lot' => 'iamalotnr',
+
+            // ],
             [
                 // primary / secondary with expiry date and lot / date of manufacture / serial with mod check
                 'barcode' => '+A99912345/$$52001510X3/16D20111212/S77DEFG457',
@@ -169,17 +183,6 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
       * 
      */
-    public function all_barcodes_can_extract_secondary_data_flag(): void
-    {
-        foreach($this->hibcs as $hibc){
-            $decoder = new UdiDecoder($hibc['barcode']);
-            $this->assertEquals($hibc['secondary_data_flag'], $decoder->secondary_data_flag);
-        }
-    }
-
-    /** @test
-      * 
-     */
     public function all_barcodes_can_extract_lot(): void
     {
         foreach($this->hibcs as $hibc){
@@ -207,22 +210,6 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
       * 
      */
-    public function all_barcodes_can_extract_date_of_manufacture_data_identifier(): void
-    {
-        foreach($this->hibcs as $hibc){
-            if(isset($hibc['date_of_manufacture_data_identifier'])){
-                $decoder = new UdiDecoder($hibc['barcode']);
-                $this->assertEquals($hibc['date_of_manufacture_data_identifier'], $decoder->date_of_manufacture_data_identifier);
-            } else {
-                $decoder = new UdiDecoder($hibc['barcode']);
-                $this->assertEquals(null, $decoder->date_of_manufacture_data_identifier);
-            }
-        }
-    }
-
-    /** @test
-      * 
-     */
     public function all_bacodes_can_extract_date_of_manufacture(): void
     {
         foreach($this->hibcs as $hibc){
@@ -232,22 +219,6 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             } else {
                 $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals(null, $decoder->date_of_manufacture);
-            }
-        }
-    }
-
-    /** @test
-      * 
-     */
-    public function all_barcodes_can_extract_secondary_supplemental_data_identifier(): void
-    {
-        foreach($this->hibcs as $hibc){
-            if(isset($hibc['secondary_supplemental_data_identifier'])){
-                $decoder = new UdiDecoder($hibc['barcode']);
-                $this->assertEquals($hibc['secondary_supplemental_data_identifier'], $decoder->secondary_supplemental_data_identifier);
-            } else {
-                $decoder = new UdiDecoder($hibc['barcode']);
-                $this->assertEquals(null, $decoder->secondary_supplemental_data_identifier);
             }
         }
     }
