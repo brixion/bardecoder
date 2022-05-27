@@ -34,7 +34,6 @@ class HIBCSecondaryDataDecoder {
 
     function __construct(UdiDecoder &$decoder)
     {   
-        echo "p2";
         $this->decoder = $decoder;
         $parts = explode('/', $decoder->secondary_data);
 
@@ -58,15 +57,15 @@ class HIBCSecondaryDataDecoder {
             }
             elseif(substr($part, 0, 1) == "S")
             {
-                
+                $this->decoder->serial_number = substr($part, 1);
             }
         }
     }
 
-    // public function getDateFromYYYYMMDD($date)
-    // {
-    //     return substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);
-    // }
+    public function getDateFromYYYYMMDD($date)
+    {
+        return substr($date, 0, 4) . '-' . substr($date, 4, 2) . '-' . substr($date, 6, 2);
+    }
 
     public function handleDateField($part)
     {
