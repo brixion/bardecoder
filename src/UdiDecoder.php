@@ -18,21 +18,21 @@ class UdiDecoder
     public string $check_character;
     public bool $is_valid;    
 
-    public bool $contains_secondary_data;
-    public string $secondary_data;
+    public ?bool $contains_secondary_data = null;
+    public ?string $secondary_data = null;
+    
+    public ?string $secondary_data_flag = null;
+    public ?string $lot = null;
+    public ?string $expiry_date = null;
 
-    public string $secondary_data_flag;
-    public string $lot;
-    public string $expiry_date;
+    public ?string $date_of_manufacture_data_identifier = null;
+    public ?string $date_of_manufacture = null;
 
-    public string $date_of_manufacture_data_identifier;
-    public string $date_of_manufacture;
+    public ?string $secondary_supplemental_data_identifier = null;
+    public ?string $serial_number = null;
 
-    public string $secondary_supplemental_data_identifier;
-    public string $serial_number;
-
-    public string $quantity_identifier;
-    public string $quantity;
+    public ?string $quantity_identifier = null;
+    public ?string $quantity = null;
 
     /**
      * UdiDecoder constructor.
