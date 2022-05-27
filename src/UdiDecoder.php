@@ -96,7 +96,7 @@ class UdiDecoder
     public function decode(): void
     {
         // Debug string
-        echo self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
+        //echo self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
 
         $this->getLic();
         $this->getProductCode();
