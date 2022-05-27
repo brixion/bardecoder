@@ -44,7 +44,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
                 'date_of_manufacture_data_identifier' => '16D',
                 'date_of_manufacture' => '2011-12-12',
                 'secondary_supplemental_data_identifier' => 'S',
-                'serial_number' => '77DEFG457',
+                'serial_number' => '77DEFG45',
             ],
             [
                 // primary / secondary with lot only / date of manufacture / expiry date with mod check
@@ -239,7 +239,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         }
     }
 
-    /** @test
+    /** test
       * 
      */
     public function all_barcodes_can_extract_quantity_identifier(): void
@@ -255,7 +255,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         }
     }
 
-    /** @test
+    /** test
       * 
      */
     public function all_barcodes_can_extract_quantity(): void
