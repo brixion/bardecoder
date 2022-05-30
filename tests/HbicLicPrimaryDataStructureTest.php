@@ -116,4 +116,33 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
             );
         }
     }
+
+    /**
+     * @test
+     * @dataProvider barcode_provider
+     * Check if UdiDecoder can instantiate without exceptions using barcode_provider
+     */
+    public function test_all_barcodes($barcode): void
+    {
+        $decoder = new UdiDecoder($barcode);
+  
+        $this->assertInstanceOf(
+            UdiDecoder::class ,
+            $decoder
+        );
+    }
+
+    public function barcode_provider()
+    {
+        return include __DIR__."\LargeBarcodesArray.php";
+    }
+
+    public function test_test(){
+        $decoder = new UdiDecoder('$$7J37571IG');
+        print_r($decoder);
+    }
+    public function test_test2(){
+        $decoder = new UdiDecoder('+$$320240902K80174R-');
+        print_r($decoder);
+    }
 }
