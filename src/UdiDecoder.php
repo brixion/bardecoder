@@ -20,6 +20,7 @@ class UdiDecoder
 
     public ?bool $contains_secondary_data = null;
     public ?string $secondary_data = null;
+    public ?array $secondary_parts = null;
     
     public ?string $secondary_data_flag = null;
     public ?string $lot = null;
@@ -47,26 +48,29 @@ class UdiDecoder
         $this->barcode_raw = $barcode;
 
         $barcode = trim($barcode, '*');
-        $pos = strpos($barcode, '+');
-        if ($pos === false) 
-            throw new Exception('Barcode is invalid, no + character found');
+        
+        if(preg_match('/^\+\$\$?/', $barcode)){
+            $this->handleLotOnlyCode($barcode);
+            return;
+        } elseif ($barcode[0] != "+"){
+            throw new Exception('Barcode is invalid, does not start with + or $');
+        }
+        
+        $pos = strpos($barcode, "+");
 
-        // We need 4 characters for LIC, at least 1 for productcode and 1 for check 
+        // We need 7 characters. 4 for LIC, at least 1 for productcode and 1 for check 
         if (strlen($barcode) < 7)
             throw new Exception('Barcode is invalid, too short');
         
         $this->barcode_stripped =  $barcode;
-        
-        // The check character is always last. Even on barcodes with secondary data
-        $last_char = substr($barcode, -1);
-        if (!preg_match('/[a-zA-Z0-9-. $\/+%]{1}/', $last_char))
-            throw new Exception('Barcode is invalid, check character is not a valid character');
-        $this->check_character = $last_char;
+        $this->handlebarcode($barcode, $pos);
+    }
 
-        // Get string between + and last character
+    public function handleBarcode($barcode, $pos){
+        $this->handleCheckCharacter($barcode);
+        // Get all characters between + and check character
         $this->barcode = substr($barcode, $pos + 1, -1);
 
-        // Check if barcode has secondary data in it
         $pos = strpos($barcode, '/');
         if ($pos !== false) {
             $this->contains_secondary_data = true;
@@ -75,22 +79,29 @@ class UdiDecoder
             $this->secondary_data = substr($this->barcode, $pos);
             $this->barcode = substr($this->barcode, 0, $pos);
             $this->barcode = rtrim($this->barcode, '/');
-
-
+            $this->secondary_parts = explode('/', $this->secondary_data);
             $secondary_decoder = new HIBCSecondaryDataDecoder($this);
+        }
+        $this->decode();
+    }
 
-            
-
+    public function handleLotOnlyCode($barcode){
+        $this->handleCheckCharacter($barcode);
+        $this->barcode = substr($barcode, 0, -1);
+        if ($this->barcode[0] == "+"){
+            $this->barcode = substr($this->barcode, 1);
         }
 
-        // Check if barcode begins with $ for lot only codes
-        // if (substr($this->barcode, 0, 1) == '$'){
-        //     $this->getPackagingIndex();
-        //     $this->getLot();
-        //     $this->test();
-        // }
+        $this->secondary_parts = explode('/',$this->barcode);
+        $secondary_decoder = new HIBCSecondaryDataDecoder($this);
+    }
 
-        $this->decode();
+    public function handleCheckCharacter($barcode){
+        // The check character is always last
+        $last_char = substr($barcode, -1);
+        if (!preg_match('/[a-zA-Z0-9-. $\/+%]{1}/', $last_char))
+            throw new Exception('Barcode is invalid, check character is not a valid character');
+        $this->check_character = $last_char;
     }
 
     public function decode(): void
@@ -164,15 +175,5 @@ class UdiDecoder
             $this->is_valid = false;
             return false;
         }
-    }
-
-    public function getLot()
-    {
-        $lot = substr($this->barcode, 1, -1);
-    }
-
-    public function test(){
-        print_r($this);
-        die();
     }
 }
