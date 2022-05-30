@@ -49,7 +49,8 @@ class UdiDecoder
 
         $barcode = trim($barcode, '*');
         
-        if(preg_match('/^\+\$\$?/', $barcode)){
+        if(preg_match('/^\+?\$\$?/', $barcode)){
+            // I allow $$ instead of +$$ but this is not valid UDI
             $this->handleLotOnlyCode($barcode);
             return;
         } elseif ($barcode[0] != "+"){
