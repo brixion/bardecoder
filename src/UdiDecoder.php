@@ -9,14 +9,14 @@ class UdiDecoder
 {
     // Debug field $count
     private static int $count = 1;
-    public string $barcode;
-    public string $barcode_raw;
-    public string $barcode_stripped;
-    public string $lic;
-    public string $product_code;
-    public string $packaging_index;
-    public string $check_character;
-    public bool $is_valid;    
+    public ?string $barcode = null;
+    public ?string $barcode_raw = null;
+    public ?string $barcode_stripped = null;
+    public ?string $lic = null;
+    public ?string $product_code = null;
+    public ?string $packaging_index = null;
+    public ?string $check_character = null;
+    public ?bool $is_valid = null;
 
     public ?bool $contains_secondary_data = null;
     public ?string $secondary_data = null;
