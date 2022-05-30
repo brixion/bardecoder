@@ -35,9 +35,16 @@ class HIBCSecondaryDataDecoder {
     function __construct(UdiDecoder &$decoder)
     {   
         $this->decoder = $decoder;
-        $parts = explode('/', $decoder->secondary_data);
+        
+        if(empty($this->decoder->secondary_parts))
+            throw new Exception("No secondary data found");
 
-        foreach($parts as $part){
+        foreach($this->decoder->secondary_parts as $part){
+            // part is too short or empty to be valid
+            if(!is_string($part)){
+                continue;
+            }
+            
             // $$[0-7] -> date field
             if(preg_match('/^\$\$[0-7]/', $part))
             {
