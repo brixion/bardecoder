@@ -41,7 +41,7 @@ class HIBCSecondaryDataDecoder {
 
         foreach($this->decoder->secondary_parts as $part){
             // part is too short or empty to be valid
-            if(!is_string($part)){
+            if(!is_string($part) || strlen($part) < 2){
                 continue;
             }
             
