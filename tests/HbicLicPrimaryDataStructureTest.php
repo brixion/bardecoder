@@ -124,6 +124,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function test_all_barcodes($barcode): void
     {
+        ini_set('memory_limit','6000M');
         $decoder = new UdiDecoder($barcode);
   
         $this->assertInstanceOf(
