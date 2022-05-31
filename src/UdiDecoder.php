@@ -138,6 +138,11 @@ class UdiDecoder
     public function handleLotPart($part): string
     {
         $pos = strpos($part, "<gs>");
+
+        // Use max length when no end character present
+        if($pos === false)
+            $pos = 20;
+        
         // lot is between AI and <gs>
         $this->lot = substr($part, 2, $pos - 2);
         // remove AI and lot and <gs>
