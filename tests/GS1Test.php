@@ -9,6 +9,8 @@ use Brixion\Bardecoder\UdiDecoder;
 
 final class GS1Test extends TestCase
 {
+    // Why are there <gs> in the barcodes present while they are not readable in the human-readable code itself?
+    // Because <gs> is the character that signifies an end of a part.
     private array $gs1 = [
         [
             "gs1" => "010019506205432717260806108356271<gs>",
