@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Brixion\Bardecoder\Test;
 
@@ -10,6 +12,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
 {
     // HBIC barcode without alphabetical characters
     // this barcode with its check character is known-good
+    // I am not using a DataProvider here to allow usage of array keys
     private array $hbics = [
         [
             'barcode' => '+D65825032111',
@@ -36,7 +39,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_lic_from_hibc(): void
     {
-        foreach($this->hbics as $hbic) {
+        foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
             $this->assertEquals(
                 $hbic['lic'],
@@ -47,10 +50,10 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
 
     /** @test 
      * Udidecoder can handle barcodes with leading and trailing *
-    */
+     */
     public function it_can_extract_lic_with_leading_and_trailing_asterisks_barcode(): void
     {
-        foreach($this->hbics as $hbic) {
+        foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode_asterisk']);
             $this->assertEquals(
                 $hbic['lic'],
@@ -65,7 +68,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_product_code_from_hibc(): void
     {
-        foreach($this->hbics as $hbic) {
+        foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
             $this->assertEquals(
                 $hbic['product_code'],
@@ -80,7 +83,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_extract_check_character_from_hibc(): void
     {
-        foreach($this->hbics as $hbic) {
+        foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
             $this->assertEquals(
                 $hbic['check_character'],
@@ -94,7 +97,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      */
     public function it_can_check_if_hibc_is_valid(): void
     {
-        foreach($this->hbics as $hbic) {
+        foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
             $this->assertEquals(
                 true,
@@ -102,48 +105,18 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
             );
         }
     }
-    
+
     /** @test
      * UdiDecoder can check if hibc is invalid
      */
     public function it_can_check_if_hibc_is_invalid(): void
     {
-        foreach($this->hbics as $hbic) {
+        foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode_invalid']);
             $this->assertEquals(
                 false,
                 $decoder->is_valid
             );
         }
-    }
-
-    /**
-     * @test
-     * @dataProvider barcode_provider
-     * Check if UdiDecoder can instantiate without exceptions using barcode_provider
-     */
-    public function test_all_barcodes($barcode): void
-    {
-        ini_set('memory_limit','6000M');
-        $decoder = new UdiDecoder($barcode);
-  
-        $this->assertInstanceOf(
-            UdiDecoder::class ,
-            $decoder
-        );
-    }
-
-    public function barcode_provider()
-    {
-        return include __DIR__."\LargeBarcodesArray.php";
-    }
-
-    public function test_test(){
-        $decoder = new UdiDecoder('$$7J37571IG');
-        print_r($decoder);
-    }
-    public function test_test2(){
-        $decoder = new UdiDecoder('+$$320240902K80174R-');
-        print_r($decoder);
     }
 }
