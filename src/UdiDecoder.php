@@ -48,7 +48,7 @@ class UdiDecoder
         $this->barcode_raw = $barcode;
 
         // Debug string
-        echo PHP_EOL . self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
+        //echo PHP_EOL . self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
 
         $barcode = trim($barcode, '*');
 
@@ -78,19 +78,31 @@ class UdiDecoder
 
     public function handleGS1Code($barcode)
     {
-        $this->barcode_raw = $barcode;
-
         // remove all ( and ) characters
         $barcode = preg_replace('/[\(\)]/', '', $barcode);
         $this->barcode = $barcode;
 
-        while (strlen($barcode) > 0) {
-            $barcode = $this->handleGS1Part($barcode);
+        $pos = strpos($this->barcode, "01");
+        if ($pos !== false){
+            $this->barcode = $this->handleGS1part($this->barcode, $pos);
+        }
+        $pos = strpos($this->barcode, "17");
+        if ($pos !== false){
+            $this->barcode = $this->handleGS1part($this->barcode, $pos);
+        }
+        $pos = strpos($barcode, "11");
+        if ($pos !== false){
+            $this->barcode = $this->handleGS1part($this->barcode, $pos);
+        }
+        $pos = strpos($barcode, "10");
+        if ($pos !== false){
+            $this->barcode = $this->handleGS1part($this->barcode, $pos);
         }
     }
 
-    public function handleGS1Part($part)
+    public function handleGS1Part($part, $pos)
     {
+        $part = substr($part, $pos);
         $ai = substr($part, 0, 2);
         if ($ai == "00")
             throw new Exception("GS1 AI starts with 00 (SSCC). this is not supported");
