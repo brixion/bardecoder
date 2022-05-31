@@ -47,6 +47,9 @@ class UdiDecoder
     {
         $this->barcode_raw = $barcode;
 
+        // Debug string
+        echo PHP_EOL . self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
+
         $barcode = trim($barcode, '*');
 
         if (preg_match('/^\+?\$\$?/', $barcode)) {
@@ -54,7 +57,13 @@ class UdiDecoder
             $this->handleLotOnlyCode($barcode);
             return;
         } elseif ($barcode[0] != "+") {
-            throw new Exception('Barcode is invalid, does not start with + or $');
+            // match all groups with the character possibly enclosed by ()
+            if (preg_match('/^\(?([\d]{2})\)?/', $barcode)) {
+                $this->handleGS1Code($barcode);
+                return;
+            } else {
+                throw new Exception('Barcode is invalid, does not start with + or $ for HIBC or contain any GS1 data');
+            }
         }
 
         $pos = strpos($barcode, "+");
@@ -64,10 +73,75 @@ class UdiDecoder
             throw new Exception('Barcode is invalid, too short');
 
         $this->barcode_stripped =  $barcode;
-        $this->handlebarcode($barcode, $pos);
+        $this->handleHIBCBarcode($barcode, $pos);
     }
 
-    public function handleBarcode($barcode, $pos)
+    public function handleGS1Code($barcode)
+    {
+        $this->barcode_raw = $barcode;
+
+        // remove all ( and ) characters
+        $barcode = preg_replace('/[\(\)]/', '', $barcode);
+        $this->barcode = $barcode;
+
+        while (strlen($barcode) > 0) {
+            $barcode = $this->handleGS1Part($barcode);
+        }
+    }
+
+    public function handleGS1Part($part)
+    {
+        $ai = substr($part, 0, 2);
+        if ($ai == "00")
+            throw new Exception("GS1 AI starts with 00 (SSCC). this is not supported");
+        elseif ($ai == "01")
+            return $this->handleGTINPart($part);
+        elseif ($ai == "17")
+            return $this->handleExpiryDatePart($part);
+        elseif ($ai == "11")
+            return $this->handleProductionDatePart($part);
+        elseif ($ai == "10")
+            return $this->handleLotPart($part);
+    }
+
+    public function handleGTINPart($part): string
+    {
+        $gtin = substr($part, 2, 14);
+        $this->check_character = $gtin[13];
+        $this->product_code = ltrim($gtin, '0');
+        // remove AI and product_code
+        return substr($part, (2 + 14));
+    }
+
+    public function handleExpiryDatePart($part): string
+    {
+        $this->expiry_date = $this->getDateFromPart($part);
+        // remove AI and expiry_date
+        return substr($part, (2 + 6));
+    }
+
+    public function handleProductionDatePart($part): string
+    {
+        $this->date_of_manufacture = $this->getDateFromPart($part);
+        // remove AI and date_of_manufacture
+        return substr($part, (2 + 6));
+    }
+
+    public function getDateFromPart($part): string
+    {
+        $yy = substr($part, 2, 2);
+        $mm = substr($part, 4, 2);
+        $dd = substr($part, 6, 2);
+        return "20$yy-$mm-$dd";
+    }
+
+    public function handleLotPart($part): string
+    {
+        $this->lot = substr($part, 2, (strlen($part) - 2));
+        return substr($part, (2 + 20));
+    }
+
+    public function handleHIBCBarcode($barcode, $pos)
     {
         $this->handleCheckCharacter($barcode);
         // Get all characters between + and check character
@@ -110,9 +184,6 @@ class UdiDecoder
 
     public function decode(): void
     {
-        // Debug string
-        //echo self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
-
         $this->getLic();
         $this->getProductCode();
         $this->getPackagingIndex();
