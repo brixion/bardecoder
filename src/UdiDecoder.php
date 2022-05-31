@@ -21,7 +21,7 @@ class UdiDecoder
     public ?bool $contains_secondary_data = null;
     public ?string $secondary_data = null;
     public ?array $secondary_parts = null;
-    
+
     public ?string $secondary_data_flag = null;
     public ?string $lot = null;
     public ?string $expiry_date = null;
@@ -48,26 +48,27 @@ class UdiDecoder
         $this->barcode_raw = $barcode;
 
         $barcode = trim($barcode, '*');
-        
-        if(preg_match('/^\+?\$\$?/', $barcode)){
+
+        if (preg_match('/^\+?\$\$?/', $barcode)) {
             // I allow $$ instead of +$$ but this is not valid UDI
             $this->handleLotOnlyCode($barcode);
             return;
-        } elseif ($barcode[0] != "+"){
+        } elseif ($barcode[0] != "+") {
             throw new Exception('Barcode is invalid, does not start with + or $');
         }
-        
+
         $pos = strpos($barcode, "+");
 
         // We need 7 characters. 4 for LIC, at least 1 for productcode and 1 for check 
         if (strlen($barcode) < 7)
             throw new Exception('Barcode is invalid, too short');
-        
+
         $this->barcode_stripped =  $barcode;
         $this->handlebarcode($barcode, $pos);
     }
 
-    public function handleBarcode($barcode, $pos){
+    public function handleBarcode($barcode, $pos)
+    {
         $this->handleCheckCharacter($barcode);
         // Get all characters between + and check character
         $this->barcode = substr($barcode, $pos + 1, -1);
@@ -75,7 +76,7 @@ class UdiDecoder
         $pos = strpos($barcode, '/');
         if ($pos !== false) {
             $this->contains_secondary_data = true;
-            
+
             // Primary data in barcode, secondary data in secondary data
             $this->secondary_data = substr($this->barcode, $pos);
             $this->barcode = substr($this->barcode, 0, $pos);
@@ -86,18 +87,20 @@ class UdiDecoder
         $this->decode();
     }
 
-    public function handleLotOnlyCode($barcode){
+    public function handleLotOnlyCode($barcode)
+    {
         $this->handleCheckCharacter($barcode);
         $this->barcode = substr($barcode, 0, -1);
-        if ($this->barcode[0] == "+"){
+        if ($this->barcode[0] == "+") {
             $this->barcode = substr($this->barcode, 1);
         }
 
-        $this->secondary_parts = explode('/',$this->barcode);
+        $this->secondary_parts = explode('/', $this->barcode);
         $secondary_decoder = new HIBCSecondaryDataDecoder($this);
     }
 
-    public function handleCheckCharacter($barcode){
+    public function handleCheckCharacter($barcode)
+    {
         // The check character is always last
         $last_char = substr($barcode, -1);
         if (!preg_match('/[a-zA-Z0-9-. $\/+%]{1}/', $last_char))
@@ -120,20 +123,20 @@ class UdiDecoder
     {
         if (!ctype_alpha($this->barcode[0]))
             throw new Exception("First character of Labeler Identification Code (LIC) must be alphabetic");
-            
+
         $this->lic = substr($this->barcode, 0, 4);
     }
 
     public function getProductCode(): void
-    {   
+    {
         // remove LIC and Packaging Index
         $barcode = substr($this->barcode, 4);
         $barcode = substr($barcode, 0, -1);
-        
+
         if (!ctype_alnum($barcode))
             throw new Exception("Product Code must only contain digits and alphabetic characters");
 
-        $this->product_code = $barcode;  
+        $this->product_code = $barcode;
     }
 
     public function getPackagingIndex(): void
@@ -148,20 +151,19 @@ class UdiDecoder
 
     public function checkBarcodeValidity(): bool
     {
-        $barcode = "+".$this->barcode;
+        $barcode = "+" . $this->barcode;
 
         // define $modulo_check_characters
-        require __DIR__ . '/ModuloCheckArray.php'; 
-        
+        require __DIR__ . '/ModuloCheckArray.php';
+
         $barcode_check_character = $this->check_character;
 
         // compare each character in barcode with $modulo_check_characters values and get the sum
         $sum = 0;
-        foreach(str_split($barcode) as $char)
-        {
+        foreach (str_split($barcode) as $char) {
             $sum += $modulo_check_characters[strtoupper($char)];
         }
-        
+
         $remainder = $sum % 43;
 
         // get the key according to the sum value from $modulo_check_characters

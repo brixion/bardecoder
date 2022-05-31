@@ -30,40 +30,32 @@ use PDO;
  * +primary_data/$$[0-9]expiry_date/lot/
  */
 
-class HIBCSecondaryDataDecoder {
+class HIBCSecondaryDataDecoder
+{
 
     function __construct(UdiDecoder &$decoder)
-    {   
+    {
         $this->decoder = $decoder;
-        
-        if(empty($this->decoder->secondary_parts))
+
+        if (empty($this->decoder->secondary_parts))
             throw new Exception("No secondary data found");
 
-        foreach($this->decoder->secondary_parts as $part){
+        foreach ($this->decoder->secondary_parts as $part) {
             // part is too short or empty to be valid
-            if(!is_string($part) || strlen($part) < 2){
+            if (!is_string($part) || strlen($part) < 2) {
                 continue;
             }
-            
+
             // $$[0-7] -> date field
-            if(preg_match('/^\$\$[0-7]/', $part))
-            {
+            if (preg_match('/^\$\$[0-7]/', $part)) {
                 $this->handleDateField($part);
-            }
-            elseif($part[0] == "$")
-            {
+            } elseif ($part[0] == "$") {
                 $this->decoder->lot = substr($part, 1);
-            }
-            elseif(substr($part, 0, 3) == "16D")
-            {
+            } elseif (substr($part, 0, 3) == "16D") {
                 $this->decoder->date_of_manufacture = $this->getDateFromYYYYMMDD(substr($part, 3));
-            }
-            elseif(substr($part, 0, 3) == "14D")
-            {
+            } elseif (substr($part, 0, 3) == "14D") {
                 $this->decoder->expiry_date = $this->getDateFromYYYYMMDD(substr($part, 3));
-            }
-            elseif(substr($part, 0, 1) == "S")
-            {
+            } elseif (substr($part, 0, 1) == "S") {
                 $this->decoder->serial_number = substr($part, 1);
             }
         }
@@ -77,12 +69,12 @@ class HIBCSecondaryDataDecoder {
     public function handleDateField($part)
     {
         $this->decoder->serial_number = null;
-        switch($part[2]){
+        switch ($part[2]) {
             case '0':
             case '1':
                 // first day of month, date in MMYY format
                 $date = substr($part, 3, 4);
-                $year = "20".substr($date, 5, 2);
+                $year = "20" . substr($date, 5, 2);
                 $month = substr($date, 3, 2);
 
                 $this->decoder->expiry_date = "$year-$month-01";
@@ -91,7 +83,7 @@ class HIBCSecondaryDataDecoder {
             case '2':
                 // MMDDYY format
                 $date = substr($part, 3, 6);
-                $year = "20". substr($date, 4, 2);
+                $year = "20" . substr($date, 4, 2);
                 $month = substr($date, 0, 2);
                 $day = substr($date, 2, 2);
 
@@ -100,7 +92,7 @@ class HIBCSecondaryDataDecoder {
                 break;
             case '3':
                 // YYMMDD format
-                $year = "20".substr($part, 3, 2);
+                $year = "20" . substr($part, 3, 2);
                 $month = substr($part, 5, 2);
                 $day = substr($part, 7, 2);
 
@@ -109,7 +101,7 @@ class HIBCSecondaryDataDecoder {
                 break;
             case '4':
                 // YYMMDDHH format
-                $year = "20".substr($part, 3, 2);
+                $year = "20" . substr($part, 3, 2);
                 $month = substr($part, 7, 2);
                 $day = substr($part, 5, 2);
                 $hour = substr($part, 9, 2);
@@ -125,7 +117,7 @@ class HIBCSecondaryDataDecoder {
                 break;
             case '6':
                 // YYJJJHH julian date format
-                $this->decoder->expiry_date = jdtojulian(substr($part, 3, 5))." ".substr($part, 9, 2);
+                $this->decoder->expiry_date = jdtojulian(substr($part, 3, 5)) . " " . substr($part, 9, 2);
                 $this->decoder->lot = substr($part, 10);
                 break;
             case '7':
@@ -140,12 +132,12 @@ class HIBCSecondaryDataDecoder {
 
     public function julianToDate($part)
     {
-        if(strlen($part) != 5)
+        if (strlen($part) != 5)
             throw new Exception("First part is a julian date, but is not 5 characters long");
 
         // get the first 2 characters from $part for the year, rest is days
-        $year = "20".substr($part, 0, 2);
-        $julian_date = substr($part, 2)-1;
+        $year = "20" . substr($part, 0, 2);
+        $julian_date = substr($part, 2) - 1;
 
         // use the year and the number of days to calculate date
         return date("Y-m-d", strtotime("$year-01-01 +$julian_date days"));
