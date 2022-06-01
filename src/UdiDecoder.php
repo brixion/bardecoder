@@ -16,6 +16,7 @@ class UdiDecoder
     public ?string $product_code = null;
     public ?string $packaging_index = null;
     public ?string $check_character = null;
+    public ?string $link_character = null;
     public ?bool $is_valid = null;
 
     public ?bool $contains_secondary_data = null;
@@ -107,7 +108,7 @@ class UdiDecoder
     public function handleGTINPart($part): string
     {
         $gtin = substr($part, 2, 14);
-        $this->check_character = $gtin[13];
+        $this->check_character = substr($gtin, -1);
         $this->product_code = ltrim($gtin, '0');
         // remove AI and product_code
         return substr($part, (2 + 14));
@@ -171,8 +172,12 @@ class UdiDecoder
 
     public function handleLotOnlyCode($barcode)
     {
-        $this->handleCheckCharacter($barcode);
-        $this->barcode = substr($barcode, 0, -1);
+        // Left is the link character, right is the check character
+        $lc = substr($barcode, -2);
+        $this->link_character = $lc[0];
+        $this->check_character = $lc[1];
+
+        $this->barcode = substr($barcode, 0, -2);
         if ($this->barcode[0] == "+") {
             $this->barcode = substr($this->barcode, 1);
         }
