@@ -73,12 +73,12 @@ class HIBCSecondaryDataDecoder
             case '0':
             case '1':
                 // first day of month, date in MMYY format
-                $date = substr($part, 3, 4);
-                $year = "20" . substr($date, 5, 2);
-                $month = substr($date, 3, 2);
+                $date = substr($part, 2, 4);
+                $month = substr($date, 0, 2);
+                $year = "20" . substr($date, 2, 2);
 
                 $this->decoder->expiry_date = "$year-$month-01";
-                $this->decoder->lot = substr($part, 7);
+                $this->decoder->lot = substr($part, 6);
                 break;
             case '2':
                 // MMDDYY format
