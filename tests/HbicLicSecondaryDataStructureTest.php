@@ -31,6 +31,28 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
 
         // ],
         [
+            'barcode' => '+$$02231162074ZA',
+            'lic' => null,
+            'product_code' => null,
+            'packaging_index' => null,
+            'check_character' => 'A',
+            'link_character' => 'Z',
+            'secondary_data' => '$$02231162074ZA',
+            'expiry_date' => '2023-02-28',
+            'lot' => '1162074',
+        ],
+        [
+            'barcode' => '+$$0624J139276%5',
+            'lic' => null,
+            'product_code' => null,
+            'packaging_index' => null,
+            'check_character' => '5',
+            'link_character' => '%',
+            'secondary_data' => '$$0624J139276%5',
+            'expiry_date' => '2024-06-30',
+            'lot' => 'J139276',
+        ],
+        [
             // primary / secondary with expiry date and lot / date of manufacture / serial with mod check
             'barcode' => '+A99912345/$$52001510X3/16D20111212/S77DEFG457',
             'barcode_asterisk' => '*+A99912345/$$52001510X3/16D20111212/S77DEFG457*',
@@ -270,6 +292,21 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             } else {
                 $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals(null, $decoder->quantity);
+            }
+        }
+    }
+
+    /** @test
+     * 
+     */
+    public function all_barcodes_can_extract_link_character(): void
+    {
+        foreach ($this->hibcs as $hibc) {
+            $decoder = new UdiDecoder($hibc['barcode']);
+            if (isset($hibc['link_character'])) {
+                $this->assertEquals($hibc['link_character'], $decoder->link_character);
+            } else {
+                $this->assertEquals(null, $decoder->link_character);
             }
         }
     }
