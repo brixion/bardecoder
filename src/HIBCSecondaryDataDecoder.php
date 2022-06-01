@@ -80,8 +80,9 @@ class HIBCSecondaryDataDecoder
                 $date = substr($part, 2, 4);
                 $month = substr($date, 0, 2);
                 $year = "20" . substr($date, 2, 2);
+                $last_day = date('t', strtotime($year . '-' . $month . '-01'));
 
-                $this->decoder->expiry_date = "$year-$month-01";
+                $this->decoder->expiry_date = "$year-$month-$last_day";
                 $this->decoder->lot = substr($part, 6);
                 break;
             case '2':
