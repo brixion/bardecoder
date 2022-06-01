@@ -45,6 +45,10 @@ class HIBCSecondaryDataDecoder
             if (!is_string($part) || strlen($part) < 2) {
                 continue;
             }
+            // Remove illegal + character
+            if ($part[0] == "+") {
+                $part = substr($part, 1);
+            }
 
             // $$[0-7] -> date field
             if (preg_match('/^\$\$[0-9]/', $part)) {
