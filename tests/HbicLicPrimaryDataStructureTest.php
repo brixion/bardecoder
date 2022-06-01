@@ -37,7 +37,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
     /** @test
      * UdiDecoder can extract lic from hibc
      */
-    public function it_can_extract_lic_from_hibc(): void
+    public function it_extracts_lic_from_hibc(): void
     {
         foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
@@ -51,7 +51,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
     /** @test 
      * Udidecoder can handle barcodes with leading and trailing *
      */
-    public function it_can_extract_lic_with_leading_and_trailing_asterisks_barcode(): void
+    public function it_extracts_lic_with_leading_and_trailing_asterisks_barcode(): void
     {
         foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode_asterisk']);
@@ -66,7 +66,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      * UdiDecoder can extract product code from hibc
      * @throws \Exception
      */
-    public function it_can_extract_product_code_from_hibc(): void
+    public function it_extracts_product_code_from_hibc(): void
     {
         foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
@@ -81,7 +81,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
      * UdiDecoder can extract check character from hibc
      * @throws \Exception
      */
-    public function it_can_extract_check_character_from_hibc(): void
+    public function it_extracts_check_character_from_hibc(): void
     {
         foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
@@ -95,7 +95,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
     /** @test
      * UdiDecoder can check if hibc is valid
      */
-    public function it_can_check_if_hibc_is_valid(): void
+    public function it_checks_if_hibc_is_valid(): void
     {
         foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode']);
@@ -109,7 +109,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
     /** @test
      * UdiDecoder can check if hibc is invalid
      */
-    public function it_can_check_if_hibc_is_invalid(): void
+    public function it_checks_if_hibc_is_invalid(): void
     {
         foreach ($this->hbics as $hbic) {
             $decoder = new UdiDecoder($hbic['barcode_invalid']);

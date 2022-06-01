@@ -133,7 +133,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_pass_lic_test(): void
+    public function it_extracts_lic_test(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -148,7 +148,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_pass_product_code_test(): void
+    public function it_extracts_product_code_test(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -163,7 +163,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_pass_packaging_index_test(): void
+    public function it_extracts_packaging_index_test(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -178,7 +178,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_pass_check_character_test(): void
+    public function it_extracts_check_character_test(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -193,7 +193,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_pass_secondary_data_test(): void
+    public function it_extracts_secondary_data_test(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -208,7 +208,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** test
      * 
      */
-    public function all_barcodes_pass_is_valid_test(): void
+    public function is_valid_test(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -219,7 +219,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_pass_is_invalid_test(): void
+    public function is_invalid_test(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -234,7 +234,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_can_extract_lot(): void
+    public function it_extracts_lot(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -249,7 +249,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_can_extract_expiry_date(): void
+    public function it_extracts_expiry_date(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -264,7 +264,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_bacodes_can_extract_date_of_manufacture(): void
+    public function it_extracts_date_of_manufacture(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -279,7 +279,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_can_extract_serial_number(): void
+    public function it_extracts_serial_number(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -294,7 +294,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** test
      * Disabled because it is not needed at this time
      */
-    public function all_barcodes_can_extract_quantity_identifier(): void
+    public function it_extracts_quantity_identifier(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -309,7 +309,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** test
      * Disabled because it is not needed at this time
      */
-    public function all_barcodes_can_extract_quantity(): void
+    public function it_extracts_quantity(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
@@ -324,7 +324,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     /** @test
      * 
      */
-    public function all_barcodes_can_extract_link_character(): void
+    public function it_extracts_link_character(): void
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
