@@ -30,30 +30,95 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         //     'lot' => 'iamalotnr',
 
         // ],
+        // 1
+        [
+            'barcode' => '+D002624225011/$$705224372/16D202201195',
+            'lic' => 'D002',
+            'product_code' => '62422501',
+            'secondary_data' => '$$705224372/16D20220119',
+            'lot' => '05224372',
+            'expiry_date' => null,
+            'date_of_manufacture' => '2022-01-19',
+            'check_character' => '5',
+            'link_character' => '9',
+        ],
+        // 2
+        [
+            'barcode' => '+D002624225101/$$704814060/16D202109022',
+            'lic' => 'D002',
+            'product_code' => '62422510',
+            'secondary_data' => '$$704814060/16D20210902',
+            'lot' => '04814060',
+            'expiry_date' => null,
+            'date_of_manufacture' => '2021-09-02',
+            'check_character' => '2',
+            'link_character' => '2',
+        ],
+        // 3
+        [
+            'barcode' => '+D002659740V1/$$704978087T',
+            'lic' => 'D002',
+            'product_code' => '659740V',
+            'secondary_data' => '$$704978087',
+            'lot' => '04978087',
+            'expiry_date' => null,
+            'check_character' => 'T',
+            'link_character' => '7',
+        ],
+        // 4
+        [
+            'barcode' => '+D0038012221/$$322102500057270C',
+            'lic' => 'D003',
+            'product_code' => '801222',
+            'secondary_data' => '$$322102500057270',
+            'lot' => '00057270',
+            'expiry_date' => '2022-10-25',
+            'check_character' => 'C',
+            'link_character' => '0  ',
+        ],
+        // 5
+        [
+            'barcode' => '+D01060701574N1/$$323103120120005967',
+            'lic' => 'D010',
+            'product_code' => '60701574N',
+            'secondary_data' => '$$32310312012000596',
+            'lot' => '2012000596',
+            'expiry_date' => '2023-10-31',
+            'check_character' => '7',
+            'link_character' => '6',
+        ],
+        // 6
+        [
+            'barcode' => '+D661H008181/+$K42888/14D202601134',
+            'lic' => 'D661',
+            'product_code' => 'H00818',
+            'secondary_data' => '+$K42888/14D20260113',
+            'lot' => 'K42888',
+            'expiry_date' => '2026-01-13',
+            'check_character' => '4',
+            'link_character' => '3',
+        ],
+        // 7
         [
             'barcode' => '+$$02231162074ZA',
             'check_character' => 'A',
             'link_character' => 'Z',
             'secondary_data' => '$$02231162074ZA',
             'expiry_date' => '2023-02-28',
+            'secondary_data' => null,
             'lot' => '1162074',
         ],
+        // 8
         [
             'barcode' => '+$$0624J139276%5',
             'check_character' => '5',
             'link_character' => '%',
             'secondary_data' => '$$0624J139276%5',
             'expiry_date' => '2024-06-30',
+            'secondary_data' => null,
             'lot' => 'J139276',
         ],
-        [
-            'barcode' => '+$$25102173960231W',
-            'check_character' => 'W',
-            'link_character' => 1,
-            'secondary_data' => '$$25102173960231W',
-            'expiry_date' => '2021-10-25',
-            'lot' => '7396023',
-        ],
+        // 9
         [
             // primary / secondary with expiry date and lot / date of manufacture / serial with mod check
             'barcode' => '+A99912345/$$52001510X3/16D20111212/S77DEFG457',
@@ -73,6 +138,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'secondary_supplemental_data_identifier' => 'S',
             'serial_number' => '77DEFG45',
         ],
+        // 10
         [
             // primary / secondary with lot only / date of manufacture / expiry date with mod check
             'barcode' => '+A99912345/$10X3/16D20111231/14D202001313',
@@ -91,6 +157,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'secondary_supplemental_data_identifier' => '14D',
             'expiry_date' => '2020-01-31',
         ],
+        // 11
         [
             // primary with 9 unit of measure / secondary with lot only / date of manufacture / expiry date / quantity identifier with mod check
             'barcode' => '+A99912349/$10X3/16D20111231/14D20200131/Q500Z',
@@ -111,6 +178,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'quantity_identifier' => 'Q',
             'quantity' => '500',
         ],
+        // 12
         [
             // Taken from documentation as well
             'barcode' => '+J123AQ3451/$$3231231BC34567/S4012R',
@@ -160,8 +228,8 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         }
     }
 
-    /** @test
-     * 
+    /** test
+     * Disabled because it is not needed at this time
      */
     public function it_extracts_packaging_index_test(): void
     {
