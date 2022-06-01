@@ -47,7 +47,7 @@ class HIBCSecondaryDataDecoder
             }
 
             // $$[0-7] -> date field
-            if (preg_match('/^\$\$[0-7]/', $part)) {
+            if (preg_match('/^\$\$[0-9]/', $part)) {
                 $this->handleDateField($part);
             } elseif ($part[0] == "$") {
                 $this->decoder->lot = substr($part, 1);
@@ -124,6 +124,14 @@ class HIBCSecondaryDataDecoder
                 // expiry_date is null, lot follows
                 $this->decoder->expiry_date = null;
                 $this->decoder->lot = substr($part, 3);
+                break;
+            case '8':
+            case '9':
+                // MMYY format, followed by lot
+                $mm = substr($part, 3, 2);
+                $yy = substr($part, 5, 2);
+                $this->decoder->expiry_date = "20$yy-$mm-30";
+                $this->decoder->lot = substr($part, 8);
                 break;
             default:
                 throw new Exception("Unknown date format: $part");
