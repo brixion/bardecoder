@@ -32,9 +32,6 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         // ],
         [
             'barcode' => '+$$02231162074ZA',
-            'lic' => null,
-            'product_code' => null,
-            'packaging_index' => null,
             'check_character' => 'A',
             'link_character' => 'Z',
             'secondary_data' => '$$02231162074ZA',
@@ -43,14 +40,19 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         ],
         [
             'barcode' => '+$$0624J139276%5',
-            'lic' => null,
-            'product_code' => null,
-            'packaging_index' => null,
             'check_character' => '5',
             'link_character' => '%',
             'secondary_data' => '$$0624J139276%5',
             'expiry_date' => '2024-06-30',
             'lot' => 'J139276',
+        ],
+        [
+            'barcode' => '+$$25102173960231W',
+            'check_character' => 'W',
+            'link_character' => 1,
+            'secondary_data' => '$$25102173960231W',
+            'expiry_date' => '2021-10-25',
+            'lot' => '7396023',
         ],
         [
             // primary / secondary with expiry date and lot / date of manufacture / serial with mod check
@@ -135,7 +137,11 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
-            $this->assertEquals($hibc['lic'], $decoder->lic);
+            if (isset($hibc['lic'])) {
+                $this->assertEquals($hibc['lic'], $decoder->lic);
+            } else {
+                $this->assertEquals(null, $decoder->lic);
+            }
         }
     }
 
@@ -146,7 +152,11 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
-            $this->assertEquals($hibc['product_code'], $decoder->product_code);
+            if (isset($hibc['product_code'])) {
+                $this->assertEquals($hibc['product_code'], $decoder->product_code);
+            } else {
+                $this->assertEquals(null, $decoder->product_code);
+            }
         }
     }
 
@@ -157,7 +167,11 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
-            $this->assertEquals($hibc['packaging_index'], $decoder->packaging_index);
+            if (isset($hibc['packaging_index'])) {
+                $this->assertEquals($hibc['packaging_index'], $decoder->packaging_index);
+            } else {
+                $this->assertEquals(null, $decoder->packaging_index);
+            }
         }
     }
 
@@ -168,7 +182,11 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
-            $this->assertEquals($hibc['check_character'], $decoder->check_character);
+            if (isset($hibc['check_character'])) {
+                $this->assertEquals($hibc['check_character'], $decoder->check_character);
+            } else {
+                $this->assertEquals(null, $decoder->check_character);
+            }
         }
     }
 
@@ -179,7 +197,11 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
-            $this->assertEquals($hibc['secondary_data'], $decoder->secondary_data);
+            if (isset($hibc['secondary_data'])) {
+                $this->assertEquals($hibc['secondary_data'], $decoder->secondary_data);
+            } else {
+                $this->assertEquals(null, $decoder->secondary_data);
+            }
         }
     }
 
@@ -200,8 +222,12 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     public function all_barcodes_pass_is_invalid_test(): void
     {
         foreach ($this->hibcs as $hibc) {
-            $decoder = new UdiDecoder($hibc['barcode_invalid']);
-            $this->assertEquals($decoder->is_valid, false);
+            $decoder = new UdiDecoder($hibc['barcode']);
+            if (isset($hibc['barcode_invalid'])) {
+                $this->assertEquals($hibc['barcode_invalid'], $decoder->barcode_invalid);
+            } else {
+                $this->assertEquals(null, $decoder->barcode_invalid);
+            }
         }
     }
 
@@ -212,7 +238,11 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     {
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
-            $this->assertEquals($hibc['lot'], $decoder->lot);
+            if (isset($hibc['lot'])) {
+                $this->assertEquals($hibc['lot'], $decoder->lot);
+            } else {
+                $this->assertEquals(null, $decoder->lot);
+            }
         }
     }
 
@@ -222,11 +252,10 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     public function all_barcodes_can_extract_expiry_date(): void
     {
         foreach ($this->hibcs as $hibc) {
+            $decoder = new UdiDecoder($hibc['barcode']);
             if (isset($hibc['expiry_date'])) {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals($hibc['expiry_date'], $decoder->expiry_date);
             } else {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals(null, $decoder->expiry_date);
             }
         }
@@ -238,11 +267,10 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     public function all_bacodes_can_extract_date_of_manufacture(): void
     {
         foreach ($this->hibcs as $hibc) {
+            $decoder = new UdiDecoder($hibc['barcode']);
             if (isset($hibc['date_of_manufacture'])) {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals($hibc['date_of_manufacture'], $decoder->date_of_manufacture);
             } else {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals(null, $decoder->date_of_manufacture);
             }
         }
@@ -254,11 +282,10 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     public function all_barcodes_can_extract_serial_number(): void
     {
         foreach ($this->hibcs as $hibc) {
+            $decoder = new UdiDecoder($hibc['barcode']);
             if (isset($hibc['serial_number'])) {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals($hibc['serial_number'], $decoder->serial_number);
             } else {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals(null, $decoder->serial_number);
             }
         }
@@ -270,11 +297,10 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     public function all_barcodes_can_extract_quantity_identifier(): void
     {
         foreach ($this->hibcs as $hibc) {
+            $decoder = new UdiDecoder($hibc['barcode']);
             if (isset($hibc['quantity_identifier'])) {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals($hibc['quantity_identifier'], $decoder->quantity_identifier);
             } else {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals(null, $decoder->quantity_identifier);
             }
         }
@@ -286,11 +312,10 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     public function all_barcodes_can_extract_quantity(): void
     {
         foreach ($this->hibcs as $hibc) {
+            $decoder = new UdiDecoder($hibc['barcode']);
             if (isset($hibc['quantity'])) {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals($hibc['quantity'], $decoder->quantity);
             } else {
-                $decoder = new UdiDecoder($hibc['barcode']);
                 $this->assertEquals(null, $decoder->quantity);
             }
         }
