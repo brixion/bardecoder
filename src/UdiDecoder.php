@@ -60,7 +60,8 @@ class UdiDecoder
         } elseif ($barcode[0] != "+") {
             // match all groups with the character possibly enclosed by ()
             if (preg_match('/^\(?([\d]{2})\)?/', $barcode)) {
-                $this->handleGS1Code($barcode);
+                throw new Exception("Not supported yet");
+                //$this->handleGS1Code($barcode);
                 return;
             } else {
                 throw new Exception('Barcode is invalid, does not start with + or $ for HIBC or contain any GS1 data');
@@ -173,6 +174,7 @@ class UdiDecoder
     public function handleLotOnlyCode($barcode)
     {
         // Left is the link character, right is the check character
+        // The link character will link it to a previous primary barcode
         $lc = substr($barcode, -2);
         $this->link_character = $lc[0];
         $this->check_character = $lc[1];
