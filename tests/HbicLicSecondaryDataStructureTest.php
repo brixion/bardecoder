@@ -74,7 +74,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'lot' => '00057270',
             'expiry_date' => '2022-10-25',
             'check_character' => 'C',
-            'link_character' => '0  ',
+            'link_character' => '0',
         ],
         // 5
         [
@@ -128,6 +128,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'product_code' => '1234',
             'packaging_index' => '5',
             'check_character' => '7',
+            'link_character' => '5',
             'secondary_data' => '$$52001510X3/16D20111212/S77DEFG45',
 
             'secondary_data_flag' => '$$5',
@@ -148,6 +149,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'product_code' => '1234',
             'packaging_index' => '5',
             'check_character' => '3',
+            'link_character' => '1',
             'secondary_data' => '$10X3/16D20111231/14D20200131',
 
             'secondary_data_flag' => '$',
@@ -167,6 +169,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'product_code' => '1234',
             'packaging_index' => '9',
             'check_character' => 'Z',
+            'link_character' => '0',
             'secondary_data' => '$10X3/16D20111231/14D20200131/Q500',
 
             'secondary_data_flag' => '$',
@@ -188,6 +191,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'product_code' => 'AQ345',
             'packaging_index' => '1',
             'check_character' => 'R',
+            'link_character' => '2',
             'secondary_data' =>  '$$3231231BC34567/S4012',
 
             'secondary_data_flag' => '$$3',
@@ -202,73 +206,70 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'product_code' => '220343',
             'packaging_index' => '0',
             'check_character' => 'H',
+            'link_character' => '5',
             'secondary_data' => '$$0723244375',
-            'lot' => '24437',
+            'lot' => '244375',
             'expiry_date' => '2023-07-31',
         ],
-        [
-            'barcode' => '+EHWD2542079/$$90000132602282103057',
-            'lic' => 'EHWD',
-            'product_code' => '254207',
-            'packaging_index' => '9',
-            'check_character' => '7',
-            'secondary_data' => '$$9000013260228210305',
-            
-        ],
-        // 1
+        // barcode that was requested to test
         [
             'barcode' => '+J003A1411P00003001/$$32601270000276973O',
             'lic' => 'J003',
             'product_code' => 'A1411P0000300',
             'packaging_index' => '0',
             'check_character' => 'O',
+            'link_character' => '3',
             'secondary_data' => '$$32601270000276973',
             'lot' => '0000276973',
             'expiry_date' => '2026-01-27'
         ],
-        //2 
+        // legacy quantity barcode
         [
             'barcode' => '+EOROCDF366A01501/$$900001122321007217',
             'lic' => 'EORO',
             'product_code' => 'CDF366A0150',
             'packaging_index' => '1',
             'check_character' => '7',
+            'link_character' => '1',
             'secondary_data' => '$$90000112232100721',
             'lot' => '2100721',
             'expiry_date' => '2023-12-31'
         ],
-        //3
+        // custom legacy quantity barcode 1
         [
-            'barcode' => '+EOROCDF366A01501/$$9200001123122lotnumber7',
+            'barcode' => '+EOROCDF366A01501/$$9200001123122lotnumber37',
             'lic' => 'EORO',
             'product_code' => 'CDF366A0150',
             'packaging_index' => '1',
             'check_character' => '7',
-            'secondary_data' => '$$9200001123122lotnumber',
+            'link_character' => '3',
+            'secondary_data' => '$$9200001123122lotnumber3',
             'lot' => 'lotnumber',
             'expiry_date' => '2022-12-31',
             'quantity' => '1'
         ],
-        //3
+        // custom legacy quantity barcode 2
         [
-            'barcode' => '+EOROCDF366A01501/$$9300005991231lotnumber7',
+            'barcode' => '+EOROCDF366A01501/$$9300005991231lotnumber37',
             'lic' => 'EORO',
             'product_code' => 'CDF366A0150',
             'packaging_index' => '1',
             'check_character' => '7',
-            'secondary_data' => '$$9300005991231lotnumber',
+            'link_character' => '3',
+            'secondary_data' => '$$9300005991231lotnumber3',
             'lot' => 'lotnumber',
             'expiry_date' => '2099-12-31',
             'quantity' => '5'
         ],
-        //3
+        // custom legacy quantity barcode 3
         [
-            'barcode' => '+EOROCDF366A01501/$$940000489123113lotnumber7',
+            'barcode' => '+EOROCDF366A01501/$$940000489123113lotnumber37',
             'lic' => 'EORO',
             'product_code' => 'CDF366A0150',
             'packaging_index' => '1',
             'check_character' => '7',
-            'secondary_data' => '$$940000489123113lotnumber',
+            'link_character' => '3',
+            'secondary_data' => '$$940000489123113lotnumber3',
             'lot' => 'lotnumber',
             'expiry_date' => '2089-12-31 13:00:00',
             'quantity' => '4'
