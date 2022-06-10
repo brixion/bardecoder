@@ -196,14 +196,14 @@ class HIBCSecondaryDataDecoder
                 $dd = substr($part, 11, 2);
                 $yy = substr($part, 13, 2);
                 $this->decoder->expiry_date = "20$yy-$mm-$dd";
-                $this->decoder->lot = substr($part, 15);
+                $this->decoder->lot = substr($part, 15, -1);
                 break;
             case '3':
                 $yy = substr($part, 9, 2);
                 $mm = substr($part, 11, 2);
                 $dd = substr($part, 13, 2);
                 $this->decoder->expiry_date = "20$yy-$mm-$dd";
-                $this->decoder->lot = substr($part, 15);
+                $this->decoder->lot = substr($part, 15, -1);
                 break;
             case '4':
                 $yy = substr($part, 9, 2);
@@ -211,13 +211,13 @@ class HIBCSecondaryDataDecoder
                 $dd = substr($part, 13, 2);
                 $hh = substr($part, 15, 2);
                 $this->decoder->expiry_date = "20$yy-$mm-$dd $hh:00:00";
-                $this->decoder->lot = substr($part, 17);
+                $this->decoder->lot = substr($part, 17, -1);
                 break;
             case '5':
                 $yy = substr($part, 9, 2);
                 $jjj = substr($part, 11, 3);
                 $this->decoder->expiry_date = date('Y-m-d', strtotime("+$jjj days"));
-                $this->decoder->lot = substr($part, 14);
+                $this->decoder->lot = substr($part, 14, -1);
                 break;
             case '6':
                 $yy = substr($part, 9, 2);
@@ -227,7 +227,7 @@ class HIBCSecondaryDataDecoder
                 $this->decoder->lot = substr($part, 16);
                 break;
             case '7':
-                $this->decoder->lot = substr($part, 9);
+                $this->decoder->lot = substr($part, 9, -1);
                 break;
             default:
                 throw new Exception("Unknown identifier for legacy secondary quantity data. Identifier: $identifier");
