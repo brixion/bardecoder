@@ -195,9 +195,87 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'lot' => 'BC34567',
             'secondary_supplemental_data_identifier' => 'S',
             'serial_number' => '4012',
-        ]
+        ],
+        [
+            'barcode' => '+EDMG2203430/$$0723244375H',
+            'lic' => 'EDMG',
+            'product_code' => '220343',
+            'packaging_index' => '0',
+            'check_character' => 'H',
+            'secondary_data' => '$$0723244375',
+            'lot' => '24437',
+            'expiry_date' => '2023-07-31',
+        ],
+        [
+            'barcode' => '+EHWD2542079/$$90000132602282103057',
+            'lic' => 'EHWD',
+            'product_code' => '254207',
+            'packaging_index' => '9',
+            'check_character' => '7',
+            'secondary_data' => '$$9000013260228210305',
+            
+        ],
+        // 1
+        [
+            'barcode' => '+J003A1411P00003001/$$32601270000276973O',
+            'lic' => 'J003',
+            'product_code' => 'A1411P0000300',
+            'packaging_index' => '0',
+            'check_character' => 'O',
+            'secondary_data' => '$$32601270000276973',
+            'lot' => '0000276973',
+            'expiry_date' => '2026-01-27'
+        ],
+        //2 
+        [
+            'barcode' => '+EOROCDF366A01501/$$900001122321007217',
+            'lic' => 'EORO',
+            'product_code' => 'CDF366A0150',
+            'packaging_index' => '1',
+            'check_character' => '7',
+            'secondary_data' => '$$90000112232100721',
+            'lot' => '2100721',
+            'expiry_date' => '2023-12-31'
+        ],
+        //3
+        [
+            'barcode' => '+EOROCDF366A01501/$$9200001123122lotnumber7',
+            'lic' => 'EORO',
+            'product_code' => 'CDF366A0150',
+            'packaging_index' => '1',
+            'check_character' => '7',
+            'secondary_data' => '$$9200001123122lotnumber',
+            'lot' => 'lotnumber',
+            'expiry_date' => '2022-12-31',
+            'quantity' => '1'
+        ],
+        //3
+        [
+            'barcode' => '+EOROCDF366A01501/$$9300005991231lotnumber7',
+            'lic' => 'EORO',
+            'product_code' => 'CDF366A0150',
+            'packaging_index' => '1',
+            'check_character' => '7',
+            'secondary_data' => '$$9300005991231lotnumber',
+            'lot' => 'lotnumber',
+            'expiry_date' => '2099-12-31',
+            'quantity' => '5'
+        ],
+        //3
+        [
+            'barcode' => '+EOROCDF366A01501/$$940000489123113lotnumber7',
+            'lic' => 'EORO',
+            'product_code' => 'CDF366A0150',
+            'packaging_index' => '1',
+            'check_character' => '7',
+            'secondary_data' => '$$940000489123113lotnumber',
+            'lot' => 'lotnumber',
+            'expiry_date' => '2089-12-31 13:00:00',
+            'quantity' => '4'
+        ],
     ];
 
+        
     /** @test
      * 
      */
@@ -284,8 +362,8 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         }
     }
 
-    /** @test
-     * 
+    /** test
+     * Disabled because it is not needed at this time
      */
     public function is_invalid_test(): void
     {
