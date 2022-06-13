@@ -60,8 +60,8 @@ class UdiDecoder
         } elseif ($barcode[0] != "+") {
             // match all groups with the character possibly enclosed by ()
             if (preg_match('/^\(?([\d]{2})\)?/', $barcode)) {
-                throw new Exception("Not supported yet");
-                //$this->handleGS1Code($barcode);
+                //throw new Exception("Not supported yet");
+                $this->handleGS1Code($barcode);
                 return;
             } else {
                 throw new Exception('Barcode is invalid, does not start with + or $ for HIBC or contain any GS1 data');
@@ -109,8 +109,11 @@ class UdiDecoder
     public function handleGTINPart($part): string
     {
         $gtin = substr($part, 2, 14);
-        $this->check_character = substr($gtin, -1);
-        $this->product_code = ltrim($gtin, '0');
+        $check_character = substr($gtin, -1);
+        $gtin_stripped = substr($gtin, 0, -1);
+        
+        $this->check_character = $check_character;
+        $this->product_code = ltrim($gtin_stripped, '0');
         // remove AI and product_code
         return substr($part, (2 + 14));
     }
