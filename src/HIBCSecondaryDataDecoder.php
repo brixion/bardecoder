@@ -159,75 +159,81 @@ class HIBCSecondaryDataDecoder
     }
 
     private function handleLegacyQuantity($part){
-        if(preg_match('/^\$\$9[^2-7][0-9]{4}$/', $part)){
-            // if $$9 does not have a 2-7 next to it,
-            // has 5 digits after the 9 and no characters after the 5 digits, then the 5 digits is quantity
-            $this->decoder->quantity = substr($part, 3, 5);
-
-            // if $$9 does not have a 2-7 next to it,
-            // has 5 digits after the 9, and there are characters after the 5 digits, then the 5 digits is quantity
-            // exp date follows quantity with MMYY and rest is lot
-        } elseif(preg_match('/^\$\$9[^2-7][0-9]{4}[0-9]{4}\d+/', $part)){
+        // $$9 is identifier, 5 digits for quantity always follows.
+        // After quantity is [2-7] date identifier
+        // If nothing follows quantity, then expiry date is null
+        // If 1 or 0 next to quantity, then MMYY follows quantity with rest is lot
+        if(preg_match('/^\$\$9[0-9]{5}[2-7]{1}\d+/', $part)){
+            $this->handleLegacyQuantityWithData($part);
+        } elseif(preg_match('/^\$\$9[0-9]{5}[^2-7]\d+/', $part)){
             $this->decoder->quantity = ltrim(substr($part, 3, 5), '0');
             $mm = substr($part, 8, 2);
             $yy = substr($part, 10, 2);
             $max_day = date('t', strtotime($mm . '-' . $yy));
             $this->decoder->expiry_date = "20$yy-$mm-$max_day";
             $this->decoder->lot = substr($part, 12);
-        } elseif(preg_match('/^\$\$9[2-7]{1}[0-9]{4}\d+/', $part)){
-            $this->handleLegacyQuantityWithData($part);
+        } elseif(preg_match('/^\$\$9[0-9]{5}[^\d]/', $part)){
+            $this->decoder->quantity = ltrim(substr($part, 3, 5), '0');
         }
     }
 
     private function handleLegacyQuantityWithData($part){
-        // get identifier which is digits after the 9
-        // first 5 digits after identifier is quantity
+        // first 5 characters after $$9 is quantity
+        // next character after quantity is date identifier
         // if identifier is 2, after quantity comes expiration date in MMDDYY and rest is lot
         // if identifier is 3, after quantity comes expiration date in YYMMDD and rest is lot
         // if identifier is 4, after quantity comes expiration date in YYMMDDHH and rest is lot
         // if identifier is 5, after quantity comes expiration date in YYJJJ (JJJ is Julian date) and rest is lot
         // if identifier is 6, after quantity comes expiration date in YYJJJHH and rest is lot
         // if identifier is 7, after quantity is lot
-        $identifier = substr($part, 3, 1);
-        $this->decoder->quantity = ltrim(substr($part, 4, 5), '0');
+        $identifier = substr($part, 8, 1);
+        $this->decoder->quantity = ltrim(substr($part, 3, 5), '0');
+        $date_field = substr($part, 9);
         switch($identifier){
             case '2':
-                $mm = substr($part, 9, 2);
-                $dd = substr($part, 11, 2);
-                $yy = substr($part, 13, 2);
+                $mm = substr($date_field, 0, 2);
+                $dd = substr($date_field, 2, 2);
+                $yy = substr($date_field, 4, 2);
                 $this->decoder->expiry_date = "20$yy-$mm-$dd";
-                $this->decoder->lot = substr($part, 15, -1);
+                if(strlen($date_field) > 6){
+                    $this->decoder->lot = substr($date_field, 6);
+                }
                 break;
             case '3':
-                $yy = substr($part, 9, 2);
-                $mm = substr($part, 11, 2);
-                $dd = substr($part, 13, 2);
+                $yy = substr($date_field, 0, 2);
+                $mm = substr($date_field, 2, 2);
+                $dd = substr($date_field, 4, 2);
                 $this->decoder->expiry_date = "20$yy-$mm-$dd";
-                $this->decoder->lot = substr($part, 15, -1);
+                if(strlen($date_field) > 6){
+                    $this->decoder->lot = substr($date_field, 6);
+                }
                 break;
             case '4':
-                $yy = substr($part, 9, 2);
-                $mm = substr($part, 11, 2);
-                $dd = substr($part, 13, 2);
-                $hh = substr($part, 15, 2);
+                $yy = substr($date_field, 0, 2);
+                $mm = substr($date_field, 2, 2);
+                $dd = substr($date_field, 4, 2);
+                $hh = substr($date_field, 6, 2);
                 $this->decoder->expiry_date = "20$yy-$mm-$dd $hh:00:00";
-                $this->decoder->lot = substr($part, 17, -1);
+                if(strlen($date_field) > 8){
+                    $this->decoder->lot = substr($date_field, 8);
+                }
                 break;
             case '5':
-                $yy = substr($part, 9, 2);
-                $jjj = substr($part, 11, 3);
-                $this->decoder->expiry_date = date('Y-m-d', strtotime("+$jjj days"));
-                $this->decoder->lot = substr($part, 14, -1);
+                $this->decoder->expiry_date = $this->julianToDate($date_field);
+                if(strlen($date_field) > 5){
+                    $this->decoder->lot = substr($date_field, 5);
+                }
                 break;
             case '6':
-                $yy = substr($part, 9, 2);
-                $jjj = substr($part, 11, 3);
-                $hh = substr($part, 14, 2);
-                $this->decoder->expiry_date = date('Y-m-d H:i:s', strtotime("+$jjj days $hh hours"));
-                $this->decoder->lot = substr($part, 16);
+                $expiry_date = $this->julianToDate($date_field);
+                $hh = substr($date_field, 5, 2);
+                $this->decoder->expiry_date = date('Y-m-d H:i:s', strtotime("$expiry_date +$hh hours"));
+                if(strlen($date_field) > 7){
+                    $this->decoder->lot = substr($date_field, 7);
+                }
                 break;
             case '7':
-                $this->decoder->lot = substr($part, 9, -1);
+                $this->decoder->lot = $date_field;
                 break;
             default:
                 throw new Exception("Unknown identifier for legacy secondary quantity data. Identifier: $identifier");
