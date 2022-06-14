@@ -241,45 +241,6 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'lot' => '2100721',
             'expiry_date' => '2023-12-31'
         ],
-        // custom legacy quantity barcode 1
-        [
-            'barcode' => '+EOROCDF366A01501/$$9200001123122lotnumber37',
-            'lic' => 'EORO',
-            'product_code' => 'CDF366A0150',
-            'packaging_index' => '1',
-            'check_character' => '7',
-            'link_character' => '3',
-            'secondary_data' => '$$9200001123122lotnumber3',
-            'lot' => 'lotnumber',
-            'expiry_date' => '2022-12-31',
-            'quantity' => '1'
-        ],
-        // custom legacy quantity barcode 2
-        [
-            'barcode' => '+EOROCDF366A01501/$$9300005991231lotnumber37',
-            'lic' => 'EORO',
-            'product_code' => 'CDF366A0150',
-            'packaging_index' => '1',
-            'check_character' => '7',
-            'link_character' => '3',
-            'secondary_data' => '$$9300005991231lotnumber3',
-            'lot' => 'lotnumber',
-            'expiry_date' => '2099-12-31',
-            'quantity' => '5'
-        ],
-        // custom legacy quantity barcode 3
-        [
-            'barcode' => '+EOROCDF366A01501/$$940000489123113lotnumber37',
-            'lic' => 'EORO',
-            'product_code' => 'CDF366A0150',
-            'packaging_index' => '1',
-            'check_character' => '7',
-            'link_character' => '3',
-            'secondary_data' => '$$940000489123113lotnumber3',
-            'lot' => 'lotnumber',
-            'expiry_date' => '2089-12-31 13:00:00',
-            'quantity' => '4'
-        ],
         [ 
             'barcode' => '+E235817C19/$$9000067101822%',
             'lic' => 'E235',
@@ -299,7 +260,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'check_character' => 'I',
             'link_character' => '6',
             'secondary_data' => '$$9000063260831L01656',
-            'lot' => '831L01656',
+            'lot' => 'L01656',
             'expiry_date' => '2026-08-31',
         ],
         [
@@ -310,7 +271,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'check_character' => 'P',
             'link_character' => '1',
             'secondary_data' => '$$90001020331222021050425-1',
-            'lot' => ' 2021050425-1',
+            'lot' => '2021050425-1',
             'expiry_date' => '2022-03-31',
         ],
         [
