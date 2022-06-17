@@ -13,6 +13,12 @@ final class GS1Test extends TestCase
     // Because <gs> is the character that signifies an end of a part.
     private array $gs1 = [
         [
+            "gs1" => "010403507700171717240117108317326",
+            "product_code" => "46100",
+            "expiry_date" => "2024-01-17",
+            "lot" => "8317326",
+        ],
+        [
             "gs1" => "010019506205432717260806108356271<gs>",
             "product_code" => "19506205432",
             "expiry_date" => "2026-08-06",
