@@ -28,7 +28,7 @@ final class HbicLicPrimaryDataStructureTest extends TestCase
             'barcode_asterisk' => '*+EKUR003152EU1G*',
             'barcode_invalid' => '+EKUR003152EU1Z',
             'lic' => 'EKUR',
-            'product_code' => '003152EU',
+            'product_code' => '3152EU',
             'packaging_index' => '1',
             'check_character' => 'G',
         ]
