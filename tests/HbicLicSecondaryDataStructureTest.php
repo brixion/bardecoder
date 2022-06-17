@@ -479,7 +479,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         }
     }
 
-    /** @test
+    /** test
      * 
      */
     public function it_extracts_link_character(): void
