@@ -53,6 +53,9 @@ class HIBCSecondaryDataDecoder
             // $$[0-9] -> date field
             if (preg_match('/^\$\$[0-9]/', $part)) {
                 $this->handleDateField($part);
+            } elseif (substr($part, 0, 2) == "$+"){
+                // This is a serial but we save it as a lot
+                $this->decoder->lot = substr($part, 2);
             } elseif ($part[0] == "$") {
                 $this->decoder->lot = substr($part, 1);
             } elseif (substr($part, 0, 3) == "16D") {

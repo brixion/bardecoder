@@ -16,20 +16,30 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     // HIBC barcodes from the documentation themselves
     // I am not using a DataProvider here to allow usage of array keys
     private array $hibcs = [
-        // [
-        //     // testing barcode
-        //     'barcode' => '+J014652230580/$$01222iamalotnr/16D20200311Z',
-        //     'lic' => 'J014',
-        //     'product_code' => '65223058',
-        //     'packaging_index' => '0',
-        //     'check_character' => 'Z',
-        //     'secondary_data' => '$$01222iamalotnr/16D20200311Z',
+        [
+            "barcode" => "+E490HE21KL1/$+HEK13044/16D20220531/Q1$",
+            "lic" => "E490",
+            "product_code" => "HE21KL",
+            "secondary_data" => "$+HEK13044/16D20220531/Q1",
+            "packaging_index" => "1",
+            "check_character" => "$",
+            "link_character" => "L",
+            "lot" => "HEK13044",
+            "date_of_manufacture" => "2022-05-31",
+            "quantity" => "1",
 
-        //     'secondary_data_flag' => '$$0',
-        //     'expory_date' => '2022-12-01',
-        //     'lot' => 'iamalotnr',
-
-        // ],
+        ],
+        [
+            "barcode" => "+DVIV627261AN1/$$3250303Z025XHKW",
+            "lic" => "DVIV",
+            "secondary_data" => "$$3250303Z025XHK",
+            "check_character" => "W",
+            "link_character" => "K",
+            "packaging_index" => "1",
+            "product_code" => "627261AN",
+            "lot" => "Z025XH",
+            "expiry_date" => "2025-03-03"
+        ],
         // 1
         [
             'barcode' => '+D002624225011/$$705224372/16D202201195',
