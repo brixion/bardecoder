@@ -14,34 +14,41 @@ final class GS1Test extends TestCase
     private array $gs1 = [
         [
             "gs1" => "010019506205432717260806108356271<gs>",
-            "product_code" => "195062054327",
+            "product_code" => "19506205432",
             "expiry_date" => "2026-08-06",
             "lot" => "8356271"
         ],
         [
             "gs1" => "01007073874690851724072210202407JV<gs>",
-            "product_code" => "707387469085",
+            "product_code" => "70738746908",
             "expiry_date" => "2024-07-22",
             "lot" => "202407JV"
         ],
         [
             "gs1" => "(01)0081705102232(11)121120210A63098<gs>",
-            "product_code" => "817051022321",
+            "product_code" => "81705102232",
             "expiry_date" => "2012-12-20",
             "expiry_date" => null,
             "lot" => "A63098"
         ],
         [
             "gs1" => "(01)00841396198953108117117<gs>(17)230301",
-            "product_code" => "841396198953",
+            "product_code" => "84139619895",
             "expiry_date" => "2023-03-01",
             "lot" => "8117117",
         ],
         [
             "gs1" => "(01)17310230007657(10)2136009<gs>(17)200926",
-            "product_code" => "17310230007657",
+            "product_code" => "1731023000765",
             "expiry_date" => "2020-09-26",
             "lot" => "2136009",
+        ],
+        [
+            "gs1" => "010406223417459510K010034<gs>112203151725022324066008292",
+            "product_code" => "66008292",
+            "expiry_date" => "2025-02-23",
+            "date_of_manufacture" => "2022-03-15",
+            "lot" => "K010034"
         ]
     ];
 
@@ -81,7 +88,7 @@ final class GS1Test extends TestCase
     }
 
     // /**
-    //  * @test
+    //  * test
     //  * @dataProvider barcode_provider
     //  * Check if UdiDecoder can instantiate without exceptions using barcode_provider
     //  */
