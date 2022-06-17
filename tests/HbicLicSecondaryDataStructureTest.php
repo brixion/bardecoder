@@ -17,6 +17,18 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
     // I am not using a DataProvider here to allow usage of array keys
     private array $hibcs = [
         [
+            "barcode" => "+E241BW9020/$$8013230806200804L",
+            "product_code" => "BW902",
+            "check_character" => "L",
+            "lic" => "E241",
+            "secondary_data" => "$$8013230806200804",
+            "packaging_index" => "0",
+            "expiry_date" => "2023-08-06",
+            "lot" => "200804",
+            "quantity" => "1"
+            
+        ],
+        [
             "barcode" => "+E490HE21KL1/$+HEK13044/16D20220531/Q1$",
             "lic" => "E490",
             "product_code" => "HE21KL",
@@ -37,7 +49,7 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             "link_character" => "K",
             "packaging_index" => "1",
             "product_code" => "627261AN",
-            "lot" => "Z025XH",
+            "lot" => "Z025XHK",
             "expiry_date" => "2025-03-03"
         ],
         // 1

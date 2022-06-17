@@ -78,6 +78,12 @@ class HIBCSecondaryDataDecoder
         $this->decoder->serial_number = null;
         switch ($part[2]) {
             case '0':
+                // MMYY format, followed by lot
+                $mm = substr($part, 3, 2);
+                $yy = substr($part, 5, 2);
+                $max_day = date('t', strtotime($mm . '-' . $yy));
+                $this->decoder->expiry_date = "20$yy-$mm-$max_day";
+                $this->decoder->lot = substr($part, 8);
             case '1':
                 // first day of month, date in MMYY format
                 $date = substr($part, 2, 4);
@@ -133,13 +139,6 @@ class HIBCSecondaryDataDecoder
                 $this->decoder->lot = substr($part, 3);
                 break;
             case '8':
-                // MMYY format, followed by lot
-                $mm = substr($part, 3, 2);
-                $yy = substr($part, 5, 2);
-                $max_day = date('t', strtotime($mm . '-' . $yy));
-                $this->decoder->expiry_date = "20$yy-$mm-$max_day";
-                $this->decoder->lot = substr($part, 8);
-                break;
             case '9':
                 $this->handleLegacyQuantity($part);
                 break;
@@ -167,7 +166,7 @@ class HIBCSecondaryDataDecoder
         // If nothing follows quantity, then expiry date is null
         // If 1 or 0 next to quantity, then MMYY follows quantity with rest is lot
         if(preg_match('/^\$\$9[0-9]{5}[2-7]{1}\d+/', $part)){
-            $this->handleLegacyQuantityWithData($part);
+            $this->handleLegacyPentaQuantityWithData($part);
         } elseif(preg_match('/^\$\$9[0-9]{5}[^2-7]\d+/', $part)){
             $this->decoder->quantity = ltrim(substr($part, 3, 5), '0');
             $mm = substr($part, 8, 2);
@@ -177,10 +176,83 @@ class HIBCSecondaryDataDecoder
             $this->decoder->lot = substr($part, 12);
         } elseif(preg_match('/^\$\$9[0-9]{5}[^\d]/', $part)){
             $this->decoder->quantity = ltrim(substr($part, 3, 5), '0');
+        } elseif(preg_match('/^\$\$8[0-9]{2}[2-7]{1}\d+/', $part)){
+            $this->handleLegacyDoubleQuantityFormat($part);
+        } elseif(preg_match('/^\$\$8[0-9]{2}[^2-7]\d+/', $part)){
+            $this->decoder->quantity = ltrim(substr($part, 3, 2), '0');
+            $mm = substr($part, 5, 2);
+            $yy = substr($part, 7, 2);
+            $max_day = date('t', strtotime($mm . '-' . $yy));
+            $this->decoder->expiry_date = "20$yy-$mm-$max_day";
+            $this->decoder->lot = substr($part, 9);
         }
     }
+    
+    private function handleLegacyDoubleQuantityFormat($part){
+        // first 2 characters after $$8 is quantity
+        // next character is date identifier
+        // if identifier is 2, after quantity comes expiration date in MMDDYY format and rest is lot
+        // if identifier is 3, after quantity comes expiration date in YYMMDD format and rest is lot
+        // if identifier is 4, after quantity comes expiration date in YYMMDDHH format and rest is lot
+        // if identifier is 5, after quantity comes expiration date in YYJJJ format and rest is lot
+        // if identifier is 6, after quantity comes expiration date in YYJJJHH format and rest is lot
+        // if identifier is 7, after quantity is lot
+        $identifier = substr($part, 5, 1);
+        $this->decoder->quantity = ltrim(substr($part, 3, 2), '0');
+        $date_field = substr($part, 6);
+        switch($identifier){
+            case 2:
+                $mm = substr($date_field, 0, 2);
+                $dd = substr($date_field, 2, 2);
+                $yy = substr($date_field, 4, 2);
+                $this->decoder->expiry_date = "20$yy-$mm-$dd";
+                if(strlen($date_field) > 6){
+                    $this->decoder->lot = substr($date_field, 6);
+                }
+                break;
+            case 3:
+                $yy = substr($date_field, 0, 2);
+                $mm = substr($date_field, 2, 2);
+                $dd = substr($date_field, 4, 2);
+                $this->decoder->expiry_date = "20$yy-$mm-$dd";
+                if(strlen($date_field) > 6){
+                    $this->decoder->lot = substr($date_field, 6);
+                }
+                break;
+            case 4:
+                $yy = substr($date_field, 0, 2);
+                $mm = substr($date_field, 2, 2);
+                $dd = substr($date_field, 4, 2);
+                $hh = substr($date_field, 6, 2);
+                $this->decoder->expiry_date = "20$yy-$mm-$dd $hh";
+                if(strlen($date_field) > 8){
+                    $this->decoder->lot = substr($date_field, 8);
+                }
+                break;
+            case 5:
+                $this->decoder->expiry_date = $this->julianToDate(substr($date_field, 0, 5));
+                if(strlen($date_field) > 5){
+                    $this->decoder->lot = substr($date_field, 5);
+                }
+                break;
+            case 6:
+                $expiry_date = $this->julianToDate(substr($date_field, 0, 5));
+                $hh = substr($date_field, 5, 2);
+                $this->decoder->expiry_date = date('Y-m-d H:i:s', strtotime("$expiry_date +$hh hours"));
+                if(strlen($date_field) > 7){
+                    $this->decoder->lot = substr($date_field, 7);
+                }
+                break;
+            case 7:
+                $this->decoder->lot = $date_field;
+                break;
+            default:
+                throw new Exception("Unknown identifier for legacy secondary quantity data. Identifier: $identifier");                
+        }
 
-    private function handleLegacyQuantityWithData($part){
+    }
+
+    private function handleLegacyPentaQuantityWithData($part){
         // first 5 characters after $$9 is quantity
         // next character after quantity is date identifier
         // if identifier is 2, after quantity comes expiration date in MMDDYY and rest is lot
