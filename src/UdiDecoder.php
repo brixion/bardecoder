@@ -161,7 +161,9 @@ class UdiDecoder
     public function handleLotPart($part): string
     {
         // get position of GS and set pos before it
-        $pos = strpos($part, "<gs>")-2;
+        $pos = strpos($part, "<gs>");
+        if(!empty($pos))
+            $pos -= 2;
 
         // Use max length when no end character present
         if($pos === false)
