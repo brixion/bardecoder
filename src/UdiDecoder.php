@@ -247,7 +247,7 @@ class UdiDecoder
         if (!ctype_alnum($barcode))
             throw new Exception("Product Code must only contain digits and alphabetic characters");
 
-        $this->product_code = $barcode;
+        $this->product_code = ltrim($barcode, '0');
     }
 
     public function getPackagingIndex(): void
