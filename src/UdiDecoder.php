@@ -104,6 +104,24 @@ class UdiDecoder
             return $this->handleProductionDatePart($part);
         elseif ($ai == "10")
             return $this->handleLotPart($part);
+        elseif ($ai == "24")
+            return $this->handleAdditionalDataPart($part);
+    }
+
+    public function handleAdditionalDataPart($part){
+        if (substr($part, 0, 3) != "240")
+            throw new Exception("Additional data part does not start with 240");
+        
+        $pos = strpos($part, "<gs>");
+        if(!empty($pos))
+            $pos -= 2;
+        
+        // Use max length when no end character present
+        if($pos === false)
+            $pos = 30;
+
+        $this->product_code = substr($part, 3, $pos);
+        
     }
 
     public function handleGTINPart($part): string
@@ -142,16 +160,18 @@ class UdiDecoder
 
     public function handleLotPart($part): string
     {
-        $pos = strpos($part, "<gs>");
+        // get position of GS and set pos before it
+        $pos = strpos($part, "<gs>")-2;
 
         // Use max length when no end character present
         if($pos === false)
             $pos = 20;
         
         // lot is between AI and <gs>
-        $this->lot = substr($part, 2, $pos - 2);
-        // remove AI and lot and <gs>
-        return substr($part, ($pos + 4));
+        $this->lot = substr($part, 2, $pos);
+        // remove AI (+2) and <gs>(+4) together with LOT
+        $return = substr($part, ($pos + 2 + 4));
+        return $return;
     }
 
     public function handleHIBCBarcode($barcode, $pos)
