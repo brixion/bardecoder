@@ -14,7 +14,7 @@ final class GS1Test extends TestCase
     private array $gs1 = [
         [
             "gs1" => "010403507700171717240117108317326",
-            "product_code" => "46100",
+            "product_code" => "403507700171",
             "expiry_date" => "2024-01-17",
             "lot" => "8317326",
         ],
@@ -92,25 +92,4 @@ final class GS1Test extends TestCase
             $this->assertEquals($gs1["lot"], $decoder->lot);
         }
     }
-
-    // /**
-    //  * test
-    //  * @dataProvider barcode_provider
-    //  * Check if UdiDecoder can instantiate without exceptions using barcode_provider
-    //  */
-    // public function test_all_barcodes($barcode): void
-    // {
-    //     ini_set('memory_limit', '6000M');
-    //     $decoder = new UdiDecoder($barcode);
-
-    //     $this->assertInstanceOf(
-    //         UdiDecoder::class,
-    //         $decoder
-    //     );
-    // }
-
-    // public function barcode_provider()
-    // {
-    //     return include __DIR__ . "\data\LargeGS1BarcodesArray.php";
-    // }
 }
