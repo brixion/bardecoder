@@ -106,6 +106,10 @@ class UdiDecoder
             return $this->handleLotPart($part);
         elseif ($ai == "24")
             return $this->handleAdditionalDataPart($part);
+        elseif ($ai == "21")
+            return $this->handleSerialNumberPart($part);
+        elseif ($ai == "30")
+            return $this->handleVariableCountOfItems($part);
     }
 
     public function handleAdditionalDataPart($part){
@@ -155,6 +159,15 @@ class UdiDecoder
         $yy = substr($part, 2, 2);
         $mm = substr($part, 4, 2);
         $dd = substr($part, 6, 2);
+
+        if($mm == "00")
+            return "";
+
+        if($dd == "00"){
+            // get last day of month and year
+            $dd = date("t", strtotime("$yy-$mm-01"));
+        }
+
         return "20$yy-$mm-$dd";
     }
 
@@ -172,6 +185,40 @@ class UdiDecoder
         // lot is between AI and <gs>
         $this->lot = substr($part, 2, $pos);
         // remove AI (+2) and <gs>(+4) together with LOT
+        $return = substr($part, ($pos + 2 + 4));
+        return $return;
+    }
+
+    public function handleSerialNumberPart($part){
+        // get position of GS and set pos before it
+        $pos = strpos($part, "<gs>");
+        if(!empty($pos))
+            $pos -= 2;
+
+        // Use max length when no end character present
+        if($pos === false)
+            $pos = 20;
+        
+        // lot is between AI and <gs>
+        $this->serial_number = substr($part, 2, $pos);
+        // remove AI (+2) and <gs>(+4) together with serial
+        $return = substr($part, ($pos + 2 + 4));
+        return $return;
+    }
+
+    public function handleVariableCountOfItems($part){
+        // get position of GS and set pos before it
+        $pos = strpos($part, "<gs>");
+        if(!empty($pos))
+            $pos -= 2;
+
+        // Use max length when no end character present
+        if($pos === false)
+            $pos = 8;
+        
+        // lot is between AI and <gs>
+        $this->quantity = substr($part, 2, $pos);
+        // remove AI (+2) and <gs>(+4) together with quantity
         $return = substr($part, ($pos + 2 + 4));
         return $return;
     }
