@@ -55,7 +55,14 @@ final class GS1Test extends TestCase
             "expiry_date" => "2025-02-23",
             "date_of_manufacture" => "2022-03-15",
             "lot" => "K010034"
+        ],
+        [
+            "gs1" => "010571351300053910175146<gs>110000001700000021000<gs>301<gs>901906",
+            "lot" => "175146",
+            "product_code" => "571351300053",
+            "expiry_date" => ""
         ]
+
     ];
 
 
