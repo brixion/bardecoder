@@ -1,0 +1,21 @@
+---
+version: 2
+updates:
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Amsterdam"
+
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "⬆️  [ Composer ] "
+
+    # Specify labels for pull requests
+    labels:
+      - "📦 dependencies"
+
+    # Set the versioning strategy
+    versioning-strategy: auto
