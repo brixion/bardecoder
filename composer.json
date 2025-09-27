@@ -8,7 +8,7 @@
         "barcode",
         "decoder"
     ],
-    "homepage": "https://github.com/Brixion/Bardecoder",
+    "homepage": "https://github.com/brixion/bardecoder",
     "type": "library",
     "require": {
         "php": "^8.0"
