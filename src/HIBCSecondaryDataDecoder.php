@@ -13,6 +13,8 @@ namespace Brixion\Bardecoder;
  */
 class HIBCSecondaryDataDecoder
 {
+    private UdiDecoder $decoder;
+
     public function __construct(UdiDecoder &$decoder)
     {
         $this->decoder = $decoder;
@@ -112,7 +114,7 @@ class HIBCSecondaryDataDecoder
                 break;
             case '6':
                 // YYJJJHH julian date format
-                $this->decoder->expiry_date = jdtojulian(substr($part, 3, 5)).' '.substr($part, 9, 2);
+                $this->decoder->expiry_date = jdtojulian((int) substr($part, 3, 5)).' '.substr($part, 9, 2);
                 $this->decoder->lot = substr($part, 10);
                 break;
             case '7':
@@ -137,7 +139,7 @@ class HIBCSecondaryDataDecoder
 
         // get the first 2 characters from $part for the year, rest is days
         $year = '20'.substr($part, 0, 2);
-        $julian_date = substr($part, 2) - 1;
+        $julian_date = ((int) substr($part, 2)) - 1;
 
         // use the year and the number of days to calculate date
         return date('Y-m-d', strtotime("$year-01-01 +$julian_date days"));

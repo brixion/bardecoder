@@ -9,8 +9,8 @@ use PHPUnit\Framework\TestCase;
 
 final class HbicLicSecondaryDataStructureTest extends TestCase
 {
-    private string $hibc001 = '+J014652230580/$$3220909K010025/16D20200311Z';
-    private string $hibc002 = '*+D002606030421/$$323101700056020/16D20201020Z*';
+    // private string $hibc001 = '+J014652230580/$$3220909K010025/16D20200311Z';
+    // private string $hibc002 = '*+D002606030421/$$323101700056020/16D20201020Z*';
 
     // HIBC barcodes from the documentation themselves
     // I am not using a DataProvider here to allow usage of array keys
@@ -130,7 +130,6 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'link_character' => 'Z',
             'secondary_data' => '$$02231162074ZA',
             'expiry_date' => '2023-02-28',
-            'secondary_data' => null,
             'lot' => '1162074',
         ],
         // 8
@@ -140,7 +139,6 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
             'link_character' => '%',
             'secondary_data' => '$$0624J139276%5',
             'expiry_date' => '2024-06-30',
-            'secondary_data' => null,
             'lot' => 'J139276',
         ],
         // 9
@@ -388,9 +386,9 @@ final class HbicLicSecondaryDataStructureTest extends TestCase
         foreach ($this->hibcs as $hibc) {
             $decoder = new UdiDecoder($hibc['barcode']);
             if (isset($hibc['barcode_invalid'])) {
-                $this->assertEquals($hibc['barcode_invalid'], $decoder->barcode_invalid);
+                $this->assertEquals($hibc['barcode_invalid'], $decoder->barcode_raw);
             } else {
-                $this->assertNull($decoder->barcode_invalid);
+                $this->assertNull($decoder->barcode_raw);
             }
         }
     }
