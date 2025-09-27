@@ -11,7 +11,7 @@
     "homepage": "https://github.com/Brixion/Bardecoder",
     "type": "library",
     "require": {
-        "php": "^7.4"
+        "php": ">=7.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
@@ -35,9 +35,6 @@
     ],
     "config": {
         "sort-packages": true,
-        "platform": {
-            "php": "7.4"
-        }
     },
     "scripts": {
         "test": "phpunit",
