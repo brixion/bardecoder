@@ -1,0 +1,57 @@
+---
+name: Code Lint
+
+on:
+  push:
+
+jobs:
+  php-cs-fixer:
+    name: PHP CS Fixer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, intl
+          coverage: none
+          tools: php-cs-fixer
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-dev
+
+      - name: Cache PHP CS Fixer
+        uses: actions/cache@v4
+        with:
+          path: .php-cs-fixer.cache
+          key: ${{ runner.os }}-php-cs-fixer-${{ hashFiles('.php-cs-fixer.dist.php') }}
+          restore-keys: |
+            ${{ runner.os }}-php-cs-fixer-
+
+      - name: Run PHP CS Fixer (dry-run)
+        shell: /usr/bin/bash -e {0}
+        env:
+          COMPOSER_PROCESS_TIMEOUT: 0
+          COMPOSER_NO_INTERACTION: 1
+          COMPOSER_NO_AUDIT: 1
+        run: php-cs-fixer fix --dry-run --diff --verbose --config=.php-cs-fixer.dist.php
+
+      - name: Upload PHP CS Fixer results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-cs-fixer-results
+          path: .php-cs-fixer.cache
