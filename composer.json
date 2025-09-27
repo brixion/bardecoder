@@ -14,6 +14,7 @@
         "php": ">=7.4"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.88",
         "phpunit/phpunit": "^9.5"
     },
     "license": "MIT",
