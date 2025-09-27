@@ -7,7 +7,7 @@ use Exception;
 class UdiDecoder
 {
     // Debug field $count
-    private static int $count = 1;
+    // private static int $count = 1;
     public ?string $barcode = null;
     public ?string $barcode_raw = null;
     public ?string $barcode_stripped = null;
@@ -338,6 +338,10 @@ class UdiDecoder
 
         // define $modulo_check_characters
         require __DIR__.'/ModuloCheckArray.php';
+
+        if (empty($modulo_check_characters)) {
+            throw new \Exception('Modulo check characters are not loaded');
+        }
 
         $barcode_check_character = $this->check_character;
 

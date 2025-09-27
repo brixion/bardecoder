@@ -34,7 +34,6 @@ final class GS1Test extends TestCase
             'gs1' => '(01)0081705102232(11)121120210A63098<gs>',
             'product_code' => '81705102232',
             'expiry_date' => '2012-12-20',
-            'expiry_date' => null,
             'lot' => 'A63098',
         ],
         [
