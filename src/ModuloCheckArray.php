@@ -45,4 +45,3 @@ $modulo_check_characters = [
     '+' => 41,
     '%' => 42,
 ];
-    

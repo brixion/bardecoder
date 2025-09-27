@@ -3,7 +3,6 @@
 namespace Brixion\Bardecoder;
 
 use Exception;
-use Brixion\Bardecoder\HIBCSecondaryDataDecoder;
 
 class UdiDecoder
 {
@@ -40,41 +39,44 @@ class UdiDecoder
      * UdiDecoder constructor.
      * Removes leading and trailing asterisks from barcode
      * Removes + character and all characters before it
-     * Checks if barcode is longer than 4 character after cleanup
-     * @param string $barcode
+     * Checks if barcode is longer than 4 character after cleanup.
+     *
      * @throws \Exception
      */
-    function __construct(string $barcode)
+    public function __construct(string $barcode)
     {
         $this->barcode_raw = $barcode;
 
         // Debug string
-        //echo PHP_EOL.self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
+        // echo PHP_EOL.self::$count++ . ' ' . $this->barcode_raw . PHP_EOL;
 
         $barcode = trim($barcode, '*');
 
         if (preg_match('/^\+?\$\$?/', $barcode)) {
             // I allow $$ instead of +$$ but this is not valid UDI
             $this->handleLotOnlyCode($barcode);
+
             return;
-        } elseif ($barcode[0] != "+") {
+        } elseif ('+' != $barcode[0]) {
             // match all groups with the character possibly enclosed by ()
             if (preg_match('/^\(?([\d]{2})\)?/', $barcode)) {
-                //throw new Exception("Not supported yet");
+                // throw new Exception("Not supported yet");
                 $this->handleGS1Code($barcode);
+
                 return;
             } else {
-                throw new Exception('Barcode is invalid, does not start with + or $ for HIBC or contain any GS1 data');
+                throw new \Exception('Barcode is invalid, does not start with + or $ for HIBC or contain any GS1 data');
             }
         }
 
-        $pos = strpos($barcode, "+");
+        $pos = strpos($barcode, '+');
 
-        // We need 7 characters. 4 for LIC, at least 1 for productcode and 1 for check 
-        if (strlen($barcode) < 7)
-            throw new Exception('Barcode is invalid, too short');
+        // We need 7 characters. 4 for LIC, at least 1 for productcode and 1 for check
+        if (\strlen($barcode) < 7) {
+            throw new \Exception('Barcode is invalid, too short');
+        }
 
-        $this->barcode_stripped =  $barcode;
+        $this->barcode_stripped = $barcode;
         $this->handleHIBCBarcode($barcode, $pos);
     }
 
@@ -86,7 +88,7 @@ class UdiDecoder
         $barcode = preg_replace('/[\(\)]/', '', $barcode);
         $this->barcode = $barcode;
 
-        while (strlen($barcode) > 0) {
+        while ('' !== $barcode) {
             $barcode = $this->handleGS1Part($barcode);
         }
     }
@@ -94,38 +96,42 @@ class UdiDecoder
     public function handleGS1Part($part)
     {
         $ai = substr($part, 0, 2);
-        if ($ai == "00")
-            throw new Exception("GS1 AI starts with 00 (SSCC). this is not supported");
-        elseif ($ai == "01")
+        if ('00' == $ai) {
+            throw new \Exception('GS1 AI starts with 00 (SSCC). this is not supported');
+        } elseif ('01' == $ai) {
             return $this->handleGTINPart($part);
-        elseif ($ai == "17")
+        } elseif ('17' == $ai) {
             return $this->handleExpiryDatePart($part);
-        elseif ($ai == "11")
+        } elseif ('11' == $ai) {
             return $this->handleProductionDatePart($part);
-        elseif ($ai == "10")
+        } elseif ('10' == $ai) {
             return $this->handleLotPart($part);
-        elseif ($ai == "24")
+        } elseif ('24' == $ai) {
             return $this->handleAdditionalDataPart($part);
-        elseif ($ai == "21")
+        } elseif ('21' == $ai) {
             return $this->handleSerialNumberPart($part);
-        elseif ($ai == "30")
+        } elseif ('30' == $ai) {
             return $this->handleVariableCountOfItems($part);
+        }
     }
 
-    public function handleAdditionalDataPart($part){
-        if (substr($part, 0, 3) != "240")
-            throw new Exception("Additional data part does not start with 240");
-        
-        $pos = strpos($part, "<gs>");
-        if(!empty($pos))
+    public function handleAdditionalDataPart($part)
+    {
+        if ('240' != substr($part, 0, 3)) {
+            throw new \Exception('Additional data part does not start with 240');
+        }
+
+        $pos = strpos($part, '<gs>');
+        if (!empty($pos)) {
             $pos -= 2;
-        
+        }
+
         // Use max length when no end character present
-        if($pos === false)
+        if (false === $pos) {
             $pos = 30;
+        }
 
         $this->product_code = substr($part, 3, $pos);
-        
     }
 
     public function handleGTINPart($part): string
@@ -133,25 +139,28 @@ class UdiDecoder
         $gtin = substr($part, 2, 14);
         $check_character = substr($gtin, -1);
         $gtin_stripped = substr($gtin, 0, -1);
-        
+
         $this->check_character = $check_character;
         $this->product_code = ltrim($gtin_stripped, '0');
+
         // remove AI and product_code
-        return substr($part, (2 + 14));
+        return substr($part, 2 + 14);
     }
 
     public function handleExpiryDatePart($part): string
     {
         $this->expiry_date = $this->getDateFromPart($part);
+
         // remove AI and expiry_date
-        return substr($part, (2 + 6));
+        return substr($part, 2 + 6);
     }
 
     public function handleProductionDatePart($part): string
     {
         $this->date_of_manufacture = $this->getDateFromPart($part);
+
         // remove AI and date_of_manufacture
-        return substr($part, (2 + 6));
+        return substr($part, 2 + 6);
     }
 
     public function getDateFromPart($part): string
@@ -160,12 +169,13 @@ class UdiDecoder
         $mm = substr($part, 4, 2);
         $dd = substr($part, 6, 2);
 
-        if($mm == "00")
-            return "";
+        if ('00' == $mm) {
+            return '';
+        }
 
-        if($dd == "00"){
+        if ('00' == $dd) {
             // get last day of month and year
-            $dd = date("t", strtotime("$yy-$mm-01"));
+            $dd = date('t', strtotime("$yy-$mm-01"));
         }
 
         return "20$yy-$mm-$dd";
@@ -174,52 +184,63 @@ class UdiDecoder
     public function handleLotPart($part): string
     {
         // get position of GS and set pos before it
-        $pos = strpos($part, "<gs>");
-        if(!empty($pos))
+        $pos = strpos($part, '<gs>');
+        if (!empty($pos)) {
             $pos -= 2;
+        }
 
         // Use max length when no end character present
-        if($pos === false)
+        if (false === $pos) {
             $pos = 20;
-        
+        }
+
         // lot is between AI and <gs>
         $this->lot = substr($part, 2, $pos);
         // remove AI (+2) and <gs>(+4) together with LOT
-        $return = substr($part, ($pos + 2 + 4));
+        $return = substr($part, $pos + 2 + 4);
+
         return $return;
     }
 
-    public function handleSerialNumberPart($part){
+    public function handleSerialNumberPart($part)
+    {
         // get position of GS and set pos before it
-        $pos = strpos($part, "<gs>");
-        if(!empty($pos))
+        $pos = strpos($part, '<gs>');
+        if (!empty($pos)) {
             $pos -= 2;
+        }
 
         // Use max length when no end character present
-        if($pos === false)
+        if (false === $pos) {
             $pos = 20;
-        
+        }
+
         // lot is between AI and <gs>
         $this->serial_number = substr($part, 2, $pos);
         // remove AI (+2) and <gs>(+4) together with serial
-        $return = substr($part, ($pos + 2 + 4));
+        $return = substr($part, $pos + 2 + 4);
+
         return $return;
     }
 
-    public function handleVariableCountOfItems($part){
+    public function handleVariableCountOfItems($part)
+    {
         // get position of GS and set pos before it
-        $pos = strpos($part, "<gs>");
-        if(!empty($pos))
+        $pos = strpos($part, '<gs>');
+        if (!empty($pos)) {
             $pos -= 2;
+        }
 
         // Use max length when no end character present
-        if($pos === false)
+        if (false === $pos) {
             $pos = 8;
-        
+        }
+
         // lot is between AI and <gs>
         $this->quantity = substr($part, 2, $pos);
         // remove AI (+2) and <gs>(+4) together with quantity
-        $return = substr($part, ($pos + 2 + 4));
+        $return = substr($part, $pos + 2 + 4);
+
         return $return;
     }
 
@@ -230,7 +251,7 @@ class UdiDecoder
         $this->barcode = substr($barcode, $pos + 1, -1);
 
         $pos = strpos($barcode, '/');
-        if ($pos !== false) {
+        if (false !== $pos) {
             $this->contains_secondary_data = true;
 
             // Primary data in barcode, secondary data in secondary data
@@ -252,7 +273,7 @@ class UdiDecoder
         $this->check_character = $lc[1];
 
         $this->barcode = substr($barcode, 0, -2);
-        if ($this->barcode[0] == "+") {
+        if ('+' == $this->barcode[0]) {
             $this->barcode = substr($this->barcode, 1);
         }
 
@@ -264,8 +285,9 @@ class UdiDecoder
     {
         // The check character is always last
         $last_char = substr($barcode, -1);
-        if (!preg_match('/[a-zA-Z0-9-. $\/+%]{1}/', $last_char))
-            throw new Exception('Barcode is invalid, check character is not a valid character');
+        if (!preg_match('/[a-zA-Z0-9-. $\/+%]{1}/', $last_char)) {
+            throw new \Exception('Barcode is invalid, check character is not a valid character');
+        }
         $this->check_character = $last_char;
     }
 
@@ -279,8 +301,9 @@ class UdiDecoder
 
     public function getLic(): void
     {
-        if (!ctype_alpha($this->barcode[0]))
-            throw new Exception("First character of Labeler Identification Code (LIC) must be alphabetic");
+        if (!ctype_alpha($this->barcode[0])) {
+            throw new \Exception('First character of Labeler Identification Code (LIC) must be alphabetic');
+        }
 
         $this->lic = substr($this->barcode, 0, 4);
     }
@@ -291,8 +314,9 @@ class UdiDecoder
         $barcode = substr($this->barcode, 4);
         $barcode = substr($barcode, 0, -1);
 
-        if (!ctype_alnum($barcode))
-            throw new Exception("Product Code must only contain digits and alphabetic characters");
+        if (!ctype_alnum($barcode)) {
+            throw new \Exception('Product Code must only contain digits and alphabetic characters');
+        }
 
         $this->product_code = ltrim($barcode, '0');
     }
@@ -301,18 +325,19 @@ class UdiDecoder
     {
         $barcode = substr($this->barcode, -1);
 
-        if (!ctype_digit($barcode))
-            throw new Exception("Packaging Index must be a number");
+        if (!ctype_digit($barcode)) {
+            throw new \Exception('Packaging Index must be a number');
+        }
 
         $this->packaging_index = $barcode;
     }
 
     public function checkBarcodeValidity(): bool
     {
-        $barcode = "+" . $this->barcode;
+        $barcode = '+'.$this->barcode;
 
         // define $modulo_check_characters
-        require __DIR__ . '/ModuloCheckArray.php';
+        require __DIR__.'/ModuloCheckArray.php';
 
         $barcode_check_character = $this->check_character;
 
@@ -331,9 +356,11 @@ class UdiDecoder
         // echo 'Calculated check character: ' . $check_character . PHP_EOL.PHP_EOL;
         if ($barcode_check_character == $check_character) {
             $this->is_valid = true;
+
             return true;
         } else {
             $this->is_valid = false;
+
             return false;
         }
     }
