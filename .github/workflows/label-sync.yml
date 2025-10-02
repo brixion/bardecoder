@@ -1,0 +1,17 @@
+---
+
+name: Label Sync
+
+on:
+  schedule:
+    - cron: '0 6 * * Mon'  # Weekly on Monday at 6 AM UTC
+  workflow_dispatch:
+  repository_dispatch:
+    types: [label-sync]
+
+permissions:
+  issues: write  # Required to create and update labels
+
+jobs:
+  label-sync:
+    uses: brixion/.github/.github/workflows/label-sync.yml@main
