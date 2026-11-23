@@ -10,8 +10,9 @@ permissions:
   contents: write  # Needed for tags & releases
 
 concurrency:
-  group: deploy-default
+  group: tag-release-${{ github.ref }}
   cancel-in-progress: false
+
 
 
 jobs:
