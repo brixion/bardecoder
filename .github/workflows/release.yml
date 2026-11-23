@@ -13,8 +13,6 @@ concurrency:
   group: tag-release-${{ github.ref }}
   cancel-in-progress: false
 
-
-
 jobs:
   tag-release:
     runs-on: ubuntu-latest
